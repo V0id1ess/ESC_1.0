@@ -5,13 +5,14 @@ void initESC() {
     enableSystemClock();
 
     // Enable Peripherals
-    enableLEDs();
+    configureLEDs();
 
     // Configure PWM pins
     enablePWMs();
     configurePWMs();
 
     // Configure Phase Control ADC pins
+    configureADCs();
 
     // Configure Signal Input ADC pin
 
