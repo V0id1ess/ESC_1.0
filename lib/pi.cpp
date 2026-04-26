@@ -1,18 +1,31 @@
-class PI {
+#include <constants.h>
+
+class PIController {
     public:
-        PI(double kpGain, double kiGain)
+        PIController(float kpGain, float kiGain)
             :kp(kpGain), ki(kiGain), integral(0.0) {}
 
-        double compute(double setpoint, double measured_value, double dt) {
-            double error = setpoint - measured_value;
+        float compute(float setpoint, float measured_value, float dt) {
+            float error = setpoint - measured_value;
+
             integral += error * dt;
 
-            return kp * error + ki * integral;
+            float output = kp * error + ki * integral;
+
+            if (output > MAX_VOLTAGE) {
+                output = MAX_VOLTAGE;
+                integral -= error * dt;
+            } else if (output < -MAX_VOLTAGE) {
+                output = -MAX_VOLTAGE;
+                integral -= error * dt;
+            }
+
+            return output;
         }
     
     private:
-        double kp;
-        double ki;
-        double integral;
-        double prev_time;
+        float kp;
+        float ki;
+        float integral;
+        float prev_time;
 };

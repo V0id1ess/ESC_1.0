@@ -1,8 +1,20 @@
 #include <common.h>
 #include <stm32f303cbt6.h>
 #include <constants.h>
+#include <operations.h>
+#include <control.h>
+#include <pi.h>
 
-uint16_t signalInput, phaseAFeedBack, phaseBFeedBack, phaseCFeedBack, phaseACurrent, phaseBCurrent, phaseCCurrent;
+Vector2D Istat, Vstat; // Stationary Reference Frame (alpha-beta)
+Vector2D Irot, Vrot; // Rotating Reference Frame (d-q)
+Vector3D signals;
+
+float angle; // Electrical angle
+
+PIController IdController(Id_p, Id_i);
+PIController IqController(Iq_p, Iq_i);
+
+float prevTime;
 
 void clamp(uint16_t &value, uint16_t min, uint16_t max) {
     if (value < min) {
@@ -12,78 +24,66 @@ void clamp(uint16_t &value, uint16_t min, uint16_t max) {
     }
 }
 
-void setCH1PWMDutyCycle(uint16_t dutyCycle) {
-    // dutyCycle range: 0 - 4096
+float clamp(float &value, float min, float max) {
+    if (value < min) {
+        return min;
+    } else if (value > max) {
+        return max;
+    }
+    return value;
+}
+
+void setDutyCycles(Vector3D voltages) {
+    // Voltage Range: 0V - VREF
     // Map to 0 - PWM_ARR
-    uint16_t mapped = (dutyCycle * PWM_ARR) / 4096;
-    clamp(mapped, 0, PWM_ARR);
-    *((volatile uint32_t*) (TIM1 + TIM_CCR1)) = mapped; // Set Duty Cycle for CH1
+    float center = 2048.0f; // Mid-point of 0-4096 scale
+    float mul = 4096.0f / VREF;
+
+    uint16_t ch1 = static_cast<uint16_t>((voltages.x * mul) + center);
+    uint16_t ch2 = static_cast<uint16_t>((voltages.y * mul) + center);
+    uint16_t ch3 = static_cast<uint16_t>((voltages.z * mul) + center);
+
+    clamp(ch1, 0, PWM_ARR);
+    clamp(ch2, 0, PWM_ARR);
+    clamp(ch3, 0, PWM_ARR);
+
+    *((volatile uint32_t*) (TIM1 + TIM_CCR1)) = ch1; // Set Duty Cycle for CH1
+    *((volatile uint32_t*) (TIM1 + TIM_CCR2)) = ch2; // Set Duty Cycle for CH2
+    *((volatile uint32_t*) (TIM1 + TIM_CCR3)) = ch3; // Set Duty Cycle for CH3
 }
 
-void setCH2PWMDutyCycle(uint16_t dutyCycle) {
-    // dutyCycle range: 0 - 4096
-    // Map to 0 - 1439
-    uint16_t mapped = (dutyCycle * PWM_ARR) / 4096;
-    clamp(mapped, 0, PWM_ARR);
-    *((volatile uint32_t*) (TIM1 + TIM_CCR2)) = mapped; // Set Duty Cycle for CH2
+float ADCToCurrent(uint32_t adc) {
+    // ADC: 3.3V VREF, 12-bit resolution
+    // Elec: 0.0006 ohm Shunt, 100x OpAmp
+    // out / 4096 * 3.3V = amps * shunt
+    return (static_cast<float>(adc) * 0.01342773437f);
 }
 
-void setCH3PWMDutyCycle(uint16_t dutyCycle) {
-    // dutyCycle range: 0 - 4096
-    // Map to 0 - 1439
-    uint16_t mapped = (dutyCycle * PWM_ARR) / 4096;
-    clamp(mapped, 0, PWM_ARR);
-    *((volatile uint32_t*) (TIM1 + TIM_CCR3)) = mapped; // Set Duty Cycle for CH3
+float ADCToVoltage(uint32_t adc) {
+    // ADC: 3.3V VREF, 12-bit resolution
+    // Elec: Voltage Divider R2 = 5k, R1 = 36k
+    // out / 4096 * 3.3V = volts * 5kohms / 41kohms
+    return (static_cast<float>(adc) / 151.367331855f);
 }
 
-long getNanoTime() {
-    return 0; // Placeholder implementation
-}
+void FOC_update() {
+    clarke(I, Istat);
 
-void updateInput() {
-    *((volatile uint32_t*) (ADC1 + ADC_CR)) |= (1 << 2); // Start ADC1 Conversion
-    while (!(*((volatile uint32_t*) (ADC1 + ADC_ISR)) & (1 << 2))); // ADC1 EOC
+    // Position Generator (SMO)
 
-    signalInput = *((volatile uint32_t*) (ADC1 + ADC_DR)); // ADC1 Data CH1
-}
+    park(Istat, angle, Irot);
 
-void updateFeedback() {
-    *((volatile uint32_t*) (ADC2 + ADC_CR)) |= (1 << 2); // Start ADC2 Conversion
-    while (!(*((volatile uint32_t*) (ADC2 + ADC_ISR)) & (1 << 2))); // ADC2 EOC
-    
-    phaseAFeedBack = *((volatile uint32_t*) (ADC2 + ADC_DR)); // ADC2 Data CH1
-    phaseBFeedBack = *((volatile uint32_t*) (ADC2 + ADC_DR + 4)); // ADC2 Data CH2
-    phaseCFeedBack = *((volatile uint32_t*) (ADC2 + ADC_DR + 8)); // ADC2 Data CH3
-}
+    float dt = 0.00004f; // Since PWM triggers at 25kHz, dt will always be 0.00004s
 
-void updateCurrentSense() {
-    *((volatile uint32_t*) (ADC4 + ADC_CR)) |= (1 << 2); // Start ADC4 Conversion
-    while (!(*((volatile uint32_t*) (ADC4 + ADC_ISR)) & (1 << 2))); // ADC4 EOC
+    float Iq_setpoint = (clamp(throttle, 0.0f, 100.0f) / 100.0f * MAX_CURRENT);
 
-    phaseACurrent = *((volatile uint32_t*) (ADC4 + ADC_DR + 8)); // ADC4 Data CH3
-    phaseBCurrent = *((volatile uint32_t*) (ADC4 + ADC_DR + 16)); // ADC4 Data CH5
-}
+    Vrot.x = IdController.compute(0.0f, Irot.x, dt); // V_sd
+    Vrot.y = IqController.compute(Iq_setpoint, Irot.y, dt); // V_sq
 
-double getAFeedBack() {
-    return phaseAFeedBack;
-}
+    park_inverse(Vrot, angle, Vstat);
 
-double getBFeedBack() {
-    return phaseBFeedBack;
-}
+    // SVPWm
+    clarke_inverse(Vstat, signals);
 
-double getCFeedBack() {
-    return phaseCFeedBack;
-}
-
-double getACurrent() {
-    return phaseACurrent;
-}
-
-double getBCurrent() {
-    return phaseBCurrent;
-}
-
-double getSignal() {
-    return signalInput;
+    setDutyCycles(signals);
 }

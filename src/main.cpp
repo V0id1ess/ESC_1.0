@@ -1,21 +1,25 @@
 #include <initializations.h>
 
 void initESC() {
-    // Initialize clocks
+    // Initialize & Configure clocks
     enableSystemClock();
+    configureClocks();
 
-    // Enable Peripherals
+    // Enable FPU
+    enableFPU();
+
+    // Enable Debug LEDs
     configureLEDs();
 
-    // Configure PWM pins
-    enablePWMs();
-    configurePWMs();
-
     // Configure Phase Control ADC pins
-    configureADCs();
+    configureADC();
 
-    // Configure Signal Input ADC pin
+    // Configure PWM pins
+    enablePWM();
+    configurePWM();
 
+    // Configure Interrupts
+    configureInterrupts();
 }
 
 int main() {

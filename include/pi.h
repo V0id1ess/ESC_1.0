@@ -1,10 +1,10 @@
 #ifndef PI_H
 #define PI_H
 
-class PI {
+class PIController {
     public:
-        PI(double kpGain, double kiGain);
-        double compute(double setpoint, double measured_value, double dt);
+        PIController(float kpGain, float kiGain);
+        float compute(float setpoint, float measured_value, float dt);
 };
 
 #endif
