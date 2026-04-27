@@ -108,7 +108,7 @@ void enablePWM() {
     *((volatile uint32_t*) (GPIOB + GPIO_AFRL)) |= (6U << ((1 - 0) * 4)); // PB1 AF6
 }
 
-void configurePWMs() {
+void configurePWM() {
     // Configure TIM1_CH1 & TIM1_CH1N for PWM
     *((volatile uint32_t*) (TIM1 + TIM_CCMR1)) &= ~(0b11 << 0); // CC1 config as output
     *((volatile uint32_t*) (TIM1 + TIM_CCER)) &= ~(1U << 1); // CC1P active high
@@ -143,7 +143,7 @@ void configurePWMs() {
 
     *((volatile uint32_t*) (TIM1 + TIM_CR1)) |= (0b01 << 5); // Enable Center-Aligned Mode 1
 
-    // Dead-time configuration (406.25ns)
+    // Dead-time configuration (Current: 406.25ns. Part shows 42.4ns Turn-off Delay & Fall Time)
     *((volatile uint32_t*) (TIM1 + TIM_BDTR)) |= (26U << 0);
 
     // Enable capture compares
@@ -155,9 +155,9 @@ void configurePWMs() {
     *((volatile uint32_t*) (TIM1 + TIM_CCER)) &= ~(1U << 10); // CC3NE output enable
 
     // Set all PWM channel duty cycles to 0%
-    setCH1PWMDutyCycle(0);
-    setCH2PWMDutyCycle(0);
-    setCH3PWMDutyCycle(0);
+    *((volatile uint32_t*) (TIM1 + TIM_CCR1)) = 0; // Set Duty Cycle for CH1
+    *((volatile uint32_t*) (TIM1 + TIM_CCR2)) = 0; // Set Duty Cycle for CH2
+    *((volatile uint32_t*) (TIM1 + TIM_CCR3)) = 0; // Set Duty Cycle for CH3
 
     *((volatile uint32_t*) (TIM1 + TIM_CR1)) |= (1U << 0); // Enable Counter
 }

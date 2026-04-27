@@ -1,4 +1,5 @@
 #include <initializations.h>
+#include <control.h>
 
 void initESC() {
     // Initialize & Configure clocks

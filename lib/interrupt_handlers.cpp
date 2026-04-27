@@ -24,5 +24,7 @@ extern "C" void ADC4_IRQHandler(void) {
 
         // Kirchoff's Law
         I.y = -(I.x + I.z);
+
+        FOC_update();
     }
 }

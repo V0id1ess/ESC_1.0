@@ -47,3 +47,21 @@ float fast_sin(float rads) {
 float fast_cos(float rads) {
     return fast_sin(rads + 1.570796f);
 }
+
+float fabsf(float x) {
+    return (x < 0.0f) ? -x : x;
+}
+
+float atan2f(float y, float x) {
+    // Fast approximation of atan2 using a polynomial approximation
+    float abs_y = fabsf(y) + 1e-10f; // Prevent division by zero
+    float angle;
+    if (x >= 0.0f) {
+        float r = (x - abs_y) / (x + abs_y);
+        angle = 0.1963f * r * r * r - 0.9817f * r + 0.785398f;
+    } else {
+        float r = (x + abs_y) / (abs_y - x);
+        angle = 0.1963f * r * r * r - 0.9817f * r + 2.356194f;
+    }
+    return (y < 0.0f) ? -angle : angle;
+}

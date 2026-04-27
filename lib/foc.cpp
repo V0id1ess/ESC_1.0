@@ -1,5 +1,5 @@
 #include <trig.h>
-#include <operations.h>
+#include <foc.h>
 
 const float SQRT3 = 1.73205080757;
 const float RECIP_SQRT3 = 1.0/SQRT3;

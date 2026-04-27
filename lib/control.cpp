@@ -1,14 +1,12 @@
 #include <common.h>
 #include <stm32f303cbt6.h>
 #include <constants.h>
-#include <operations.h>
+#include <foc.h>
+#include <smo.h>
 #include <control.h>
 #include <pi.h>
 
-Vector2D Istat, Vstat; // Stationary Reference Frame (alpha-beta)
-Vector2D Irot, Vrot; // Rotating Reference Frame (d-q)
-Vector3D signals;
-
+float align_time = 0.0f; // Time spent in ALIGN state
 float angle; // Electrical angle
 
 PIController IdController(Id_p, Id_i);
@@ -34,10 +32,10 @@ float clamp(float &value, float min, float max) {
 }
 
 void setDutyCycles(Vector3D voltages) {
-    // Voltage Range: 0V - VREF
+    // Voltage Range: -MAX_VOLTAGE - +MAX_VOLTAGE
     // Map to 0 - PWM_ARR
-    float center = 2048.0f; // Mid-point of 0-4096 scale
-    float mul = 4096.0f / VREF;
+    float center = static_cast<float>(PWM_ARR) / 2.0f; // Mid-point of PWM_ARR scale
+    float mul = static_cast<float>(PWM_ARR) / MAX_VOLTAGE;
 
     uint16_t ch1 = static_cast<uint16_t>((voltages.x * mul) + center);
     uint16_t ch2 = static_cast<uint16_t>((voltages.y * mul) + center);
@@ -71,18 +69,37 @@ void FOC_update() {
 
     // Position Generator (SMO)
 
-    park(Istat, angle, Irot);
+    switch(motorState) {
+        case ALIGN:
+            angle = 0.0f; // Force rotor to a known position
+            throttle = 0.5f; // Apply moderate throttle to encourage alignment
+            align_time += DT;
+            if (align_time >= 0.500f) { // After 500 ms, transition to STARTING
+                motorState = LOW_BEMF;
+            }
 
-    float dt = 0.00004f; // Since PWM triggers at 25kHz, dt will always be 0.00004s
+            break;
+        
+        case LOW_BEMF:
+            incrementVirtualAngle(1.0f); // Slowly ramp up virtual angle to encourage movement
+            angle = getAngle();
+            break;
+        
+        case RUNNING:
+            angle = getAngle();
+            break;
+    } 
+
+    park(Istat, angle, Irot);
 
     float Iq_setpoint = (clamp(throttle, 0.0f, 100.0f) / 100.0f * MAX_CURRENT);
 
-    Vrot.x = IdController.compute(0.0f, Irot.x, dt); // V_sd
-    Vrot.y = IqController.compute(Iq_setpoint, Irot.y, dt); // V_sq
+    Vrot.x = IdController.compute(0.0f, Irot.x, DT); // V_sd
+    Vrot.y = IqController.compute(Iq_setpoint, Irot.y, DT); // V_sq
 
     park_inverse(Vrot, angle, Vstat);
 
-    // SVPWm
+    // SVPWM
     clarke_inverse(Vstat, signals);
 
     setDutyCycles(signals);
