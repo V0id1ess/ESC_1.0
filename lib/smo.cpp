@@ -6,6 +6,7 @@
 
 float virtual_angle = 0.0f; // Virtual angle for sensorless control
 float measured_angle = 0.0f; // Measured angle from back-EMF
+float prev_angle = 0.0f;
 
 Vector2D I_pred; // Predicted current for SMO
 Vector2D back_emf; // Back-EMF voltages for stationary frame (alpha-beta)
@@ -45,6 +46,10 @@ void SMO_update() {
     back_emf.y += GAIN * signum(I.x - I_pred.x) * DT;
 
     measured_angle = atan2f(back_emf.y, back_emf.x) + 1.57079632679f; // Offset by 90 degrees to align with rotor position
+
+    velocity = (measured_angle - prev_angle) / DT * 2.0f / POLES;
+
+    prev_angle = measured_angle;
 
     // Create new current predictions based on previous measurements, applied voltages, and back-EMF estimates
     I_pred.x = CONST_F * I.x + CONST_K * (Vstat.x - back_emf.x);

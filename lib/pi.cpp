@@ -27,5 +27,4 @@ class PIController {
         float kp;
         float ki;
         float integral;
-        float prev_time;
 };

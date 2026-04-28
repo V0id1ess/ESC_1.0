@@ -13,12 +13,13 @@ extern Vector3D I;
 extern Vector3D V;
 extern Vector3D I_offset;
 
-Vector2D Istat, Vstat; // Stationary Reference Frame (alpha-beta)
-Vector2D Irot, Vrot; // Rotating Reference Frame (d-q)
-Vector3D signals; // SVPWM Duty Cycle Signals for 3 Phases
+extern Vector2D Istat, Vstat; // Stationary Reference Frame (alpha-beta)
+extern Vector2D Irot, Vrot; // Rotating Reference Frame (d-q)
+extern Vector3D signals; // SVPWM Duty Cycle Signals for 3 Phases
 
-// Throttle reference (0 - 100)
-extern float throttle = 0.0;
+// Motion Variables
+extern float acceleration;
+extern float velocity;
 
 extern void setDutyCycles(Vector3D voltages);
 extern float ADCToCurrent(uint32_t adc);

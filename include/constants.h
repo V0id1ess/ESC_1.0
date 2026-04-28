@@ -24,6 +24,9 @@
 #define MIN_BEMF 0.5f // Minimum Back-EMF Voltage for Reliable Angle Estimation (Volts)
 #define GAIN 26.0f // Gain for SMO Back-EMF Update (Higher = Faster Response, but More Noise)
 #define PHI 0.5f // Smoothing factor for angle estimation (0.0 - 1.0, higher = smoother but more lag)
+#define PROFILER_KV 0.0f // Motion Profiler Velocity Gain
+#define PROFILER_KA 0.0f // Motion Profiler Acceleration Gain
+#define PROFILER_ACCEL 0.0f // Motion Profiler Constant Acceleration
 
 // Mechanical
 #define POLES 12U
