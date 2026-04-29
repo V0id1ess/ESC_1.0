@@ -1,16 +1,18 @@
 #include <constants.h>
 
-class PIController {
+class PIDController {
     public:
-        PIController(float kpGain, float kiGain)
-            :kp(kpGain), ki(kiGain), integral(0.0) {}
+        PIDController(float kpGain, float kiGain, float kdGain)
+            :kp(kpGain), ki(kiGain), kd(kdGain), integral(0.0), derivative(0.0) {}
 
         float compute(float setpoint, float measured_value, float dt) {
             float error = setpoint - measured_value;
 
             integral += error * dt;
+            derivative = (error - previous_error) / dt;
+            previous_error = error;
 
-            float output = kp * error + ki * integral;
+            float output = kp * error + ki * integral + kd * derivative;
 
             if (output > MAX_VOLTAGE) {
                 output = MAX_VOLTAGE;
@@ -26,5 +28,8 @@ class PIController {
     private:
         float kp;
         float ki;
+        float kd;
+        float previous_error;
         float integral;
+        float derivative;
 };

@@ -6,7 +6,7 @@
 class Feedforward {
     public:
         Feedforward(float kV, float kA);
-        float calculate(Profile profile);
+        float compute(Profile profile);
 };
 
 #endif

@@ -13,7 +13,7 @@ void park(Vector2D stat, float theta, Vector2D &res) {
 // natural frame to stationary frame
 void clarke(Vector3D natural, Vector2D &res) {
     res.x = natural.x; // I_alpha
-    res.y = RECIP_SQRT3*(natural.x + 2.0f*natural.z); // I_beta
+    res.y = RECIP_SQRT3*(natural.x + 2.0f*natural.y); // I_beta
 }
 
 // rotating frame to stationary frame

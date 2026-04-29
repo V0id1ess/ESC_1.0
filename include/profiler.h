@@ -8,8 +8,8 @@ struct Profile {
 
 class Profiler {
     public:
-        Profiler(float kvGain, float kaGain, float j_max, float max_voltage);
-        void compute(float setpoint, Profile &profile, float dt);
+        Profiler(float kvGain, float kaGain, float j_max);
+        void compute(float setpoint, Profile profiler, Profile &targetProfile, float dt);
 };
 
 #endif

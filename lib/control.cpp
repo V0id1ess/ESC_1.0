@@ -4,13 +4,18 @@
 #include <foc.h>
 #include <smo.h>
 #include <control.h>
-#include <pi.h>
+#include <profiler.h>
+#include <pid.h>
+#include <feedforward.h>
 
 float align_time = 0.0f; // Time spent in ALIGN state
 float angle; // Electrical angle
 
-PIController IdController(Id_p, Id_i);
-PIController IqController(Iq_p, Iq_i);
+PIDController IdController(Id_p, Id_i, 0.0);
+PIDController IqController(Iq_p, Iq_i, 0.0);
+PIDController VelocityFBController(Vel_p, Vel_i, Vel_d);
+Feedforward VelocityFFController(PROFILER_KV, PROFILER_KA);
+Profiler MotionProfiler(PROFILER_KV, PROFILER_KA, PROFILER_JERK_MAX);
 
 float prevTime;
 
@@ -65,10 +70,10 @@ float ADCToVoltage(uint32_t adc) {
 }
 
 void FOC_update() {
+    // Stationary Frame Transform
     clarke(I, Istat);
 
     // Position Generator (SMO)
-
     switch(motorState) {
         case ALIGN:
             angle = 0.0f; // Force rotor to a known position
@@ -90,16 +95,24 @@ void FOC_update() {
             break;
     } 
 
+    // Rotating Frame Transform
     park(Istat, angle, Irot);
 
-    float Iq_setpoint = (clamp(throttle, 0.0f, 100.0f) / 100.0f * MAX_CURRENT);
+    // Motion Profiling and Perpendicular Current Control
+    MotionProfiler.compute(throttle, profile, targetProfile, DT);
+    float I_fb = VelocityFBController.compute(targetProfile.velocity, profile.velocity, DT);
+    float I_ff = VelocityFFController.compute(targetProfile);
+    float Iq_setpoint = I_fb + I_ff;
 
+    // Iq -> V_sq, Id -> V_sd
     Vrot.x = IdController.compute(0.0f, Irot.x, DT); // V_sd
     Vrot.y = IqController.compute(Iq_setpoint, Irot.y, DT); // V_sq
 
+    // Back to Stationary Frame
     park_inverse(Vrot, angle, Vstat);
 
-    // SVPWM
+    // Back to Natural Frame and PWM Outputs
+    // At some point, switch to Space Vector PWM for better performance
     clarke_inverse(Vstat, signals);
 
     setDutyCycles(signals);

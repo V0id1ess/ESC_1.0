@@ -1,7 +1,9 @@
 #ifndef CONTROL_H
 #define CONTROL_H
+
 #include <common.h>
 #include <foc.h>
+#include <profiler.h>
 
 
 // Global Motor Motion State
@@ -19,8 +21,9 @@ extern Vector3D signals; // SVPWM Duty Cycle Signals for 3 Phases
 
 // Motion Variables
 extern float throttle; // 0-100% Throttle Command
-extern float acceleration;
-extern float velocity;
+extern float jerk; // Current jerk (testing use only)
+extern Profile profile; // Motion Profile for Velocity and Acceleration
+extern Profile targetProfile; // Target Motion Profile for Velocity and Acceleration
 
 extern void setDutyCycles(Vector3D voltages);
 extern float ADCToCurrent(uint32_t adc);
