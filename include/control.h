@@ -18,6 +18,7 @@ extern Vector2D Irot, Vrot; // Rotating Reference Frame (d-q)
 extern Vector3D signals; // SVPWM Duty Cycle Signals for 3 Phases
 
 // Motion Variables
+extern float throttle; // 0-100% Throttle Command
 extern float acceleration;
 extern float velocity;
 

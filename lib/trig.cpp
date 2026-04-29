@@ -38,14 +38,14 @@ static const float sinTable[256] = {
     -0.1950903f, -0.1709619f, -0.1467305f, -0.1224107f, -0.0980171f, -0.0735646f, -0.0490677f, -0.0245412f
 };
 
-float fast_sin(float rads) {
+float sin(float rads) {
     int index = (int)(rads * RAD_TO_INDEX);
 
     return sinTable[index & (SIN_LUT_SIZE - 1)];
 }
 
-float fast_cos(float rads) {
-    return fast_sin(rads + 1.570796f);
+float cos(float rads) {
+    return sin(rads + 1.570796f);
 }
 
 float fabsf(float x) {
