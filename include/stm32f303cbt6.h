@@ -7,6 +7,18 @@
 #define RCC_AHBENR 0x14 // AHBENR Offset
 #define RCC_APB2ENR 0x18 // APB2ENR Offset
 
+#define SYSCFG 0x40010000UL // SYSCFG Base Address
+
+#define SYSCFG_CFGR1 0x00 // CFGR1 Offset
+#define SYSCFG_RCR 0x04 // RCR Offset
+#define SYSCFG_EXTICR1 0x08 // EXTICR1 Offset
+#define SYSCFG_EXTICR2 0x0C // EXTICR2 Offset
+#define SYSCFG_EXTICR3 0x10 // EXTICR3 Offset
+#define SYSCFG_EXTICR4 0x14 // EXTICR4 Offset
+#define SYSCFG_CFGR2 0x18 // CFGR2 Offset
+#define SYSCFG_CFGR3 0x50 // CFGR3 Offset
+#define SYSCFG_CFGR4 0x48 // CFGR4 Offset
+
 #define GPIOA 0x48000000UL // GPIOA Base address
 #define GPIOB 0x48000400UL // GPIOB Base address
 

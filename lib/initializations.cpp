@@ -20,6 +20,10 @@
 * PB14 - ADC4_CH5 - Motor Phase C Current Sense
 */
 
+/* Main-Board Connections
+* PA3 - ESC DShot Line
+*/
+
 void enableSystemClock() {
     // Configure main system clock
     *((volatile uint32_t*) (RCC + RCC_CR)) |= (1U << 0); // HSI ON
@@ -229,6 +233,13 @@ void configureADC() {
     // Add Offsets
     I_offset.x = ADCToCurrent(*((volatile uint32_t*) (ADC4 + ADC_JDR1)));
     I_offset.z = ADCToCurrent(*((volatile uint32_t*) (ADC4 + ADC_JDR2)));
+}
+
+void configureDShot() {
+    // Configure PA3 as Alternate Function for DShot Output
+    *((volatile uint32_t*) (GPIOA + GPIO_MODER)) |= (0b10 << (3 * 2)); // PA3 AF
+    *((volatile uint32_t*) (GPIOA + GPIO_OSPEEDR)) |= (0b11 << (3 * 2)); // PA3 High Speed
+    *((volatile uint32_t*) (GPIOA + GPIO_PUPDR)) |= (0b10 << (3 * 2)); // PA3 Pull-Down
 }
 
 void configureInterrupts() {

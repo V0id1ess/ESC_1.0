@@ -21,6 +21,9 @@ void initESC() {
 
     // Configure Interrupts
     configureInterrupts();
+
+    // Configure DShot Output
+    
 }
 
 int main() {
