@@ -8,6 +8,8 @@ c:/users/ryanf/.platformio/packages/toolchain-gccarmnoneeabi/bin/../lib/gcc/arm-
                               .pio\build\genericSTM32F303CB\src\interrupt_handlers.o (__aeabi_fsub)
 c:/users/ryanf/.platformio/packages/toolchain-gccarmnoneeabi/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7e-m\libgcc.a(_arm_muldivsf3.o)
                               .pio\build\genericSTM32F303CB\src\interrupt_handlers.o (__aeabi_fmul)
+c:/users/ryanf/.platformio/packages/toolchain-gccarmnoneeabi/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7e-m\libgcc.a(_arm_cmpsf2.o)
+                              .pio\build\genericSTM32F303CB\lib9bc\libesc.a(control.o) (__aeabi_fcmpge)
 c:/users/ryanf/.platformio/packages/toolchain-gccarmnoneeabi/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7e-m\libgcc.a(_arm_fixsfsi.o)
                               .pio\build\genericSTM32F303CB\lib9bc\libesc.a(control.o) (__aeabi_f2iz)
 c:/users/ryanf/.platformio/packages/toolchain-gccarmnoneeabi/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7e-m\libgcc.a(_arm_fixunssfsi.o)
@@ -64,8 +66,6 @@ Discarded input sections
  .bss.align_time
                 0x00000000        0x4 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(control.o)
  .bss.jerk      0x00000000        0x4 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(control.o)
- .bss.motorState
-                0x00000000        0x1 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(control.o)
  .bss.prevTime  0x00000000        0x4 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(control.o)
  .bss.profile   0x00000000        0x8 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(control.o)
  .bss.targetProfile
@@ -80,6 +80,8 @@ Discarded input sections
  .bss           0x00000000        0x0 c:/users/ryanf/.platformio/packages/toolchain-gccarmnoneeabi/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7e-m\libgcc.a(_arm_addsubsf3.o)
  .data          0x00000000        0x0 c:/users/ryanf/.platformio/packages/toolchain-gccarmnoneeabi/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7e-m\libgcc.a(_arm_muldivsf3.o)
  .bss           0x00000000        0x0 c:/users/ryanf/.platformio/packages/toolchain-gccarmnoneeabi/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7e-m\libgcc.a(_arm_muldivsf3.o)
+ .data          0x00000000        0x0 c:/users/ryanf/.platformio/packages/toolchain-gccarmnoneeabi/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7e-m\libgcc.a(_arm_cmpsf2.o)
+ .bss           0x00000000        0x0 c:/users/ryanf/.platformio/packages/toolchain-gccarmnoneeabi/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7e-m\libgcc.a(_arm_cmpsf2.o)
  .data          0x00000000        0x0 c:/users/ryanf/.platformio/packages/toolchain-gccarmnoneeabi/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7e-m\libgcc.a(_arm_fixsfsi.o)
  .bss           0x00000000        0x0 c:/users/ryanf/.platformio/packages/toolchain-gccarmnoneeabi/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7e-m\libgcc.a(_arm_fixsfsi.o)
  .data          0x00000000        0x0 c:/users/ryanf/.platformio/packages/toolchain-gccarmnoneeabi/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7e-m\libgcc.a(_arm_fixunssfsi.o)
@@ -181,7 +183,7 @@ LOAD c:/users/ryanf/.platformio/packages/toolchain-gccarmnoneeabi/bin/../lib/gcc
                 0x08000000                g_pfnVectors
                 0x08000188                . = ALIGN (0x4)
 
-.text           0x08000188      0xf80
+.text           0x08000188     0x1038
                 0x08000188                . = ALIGN (0x4)
  *(.text)
  .text          0x08000188       0x40 c:/users/ryanf/.platformio/packages/toolchain-gccarmnoneeabi/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7e-m/crtbegin.o
@@ -204,220 +206,236 @@ LOAD c:/users/ryanf/.platformio/packages/toolchain-gccarmnoneeabi/bin/../lib/gcc
                 0x080003e4                __aeabi_fmul
                 0x0800054c                __aeabi_fdiv
                 0x0800054c                __divsf3
- .text          0x08000684       0x4c c:/users/ryanf/.platformio/packages/toolchain-gccarmnoneeabi/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7e-m\libgcc.a(_arm_fixsfsi.o)
-                0x08000684                __aeabi_f2iz
-                0x08000684                __fixsfsi
- .text          0x080006d0       0x40 c:/users/ryanf/.platformio/packages/toolchain-gccarmnoneeabi/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7e-m\libgcc.a(_arm_fixunssfsi.o)
-                0x080006d0                __fixunssfsi
-                0x080006d0                __aeabi_f2uiz
+ .text          0x08000684       0xec c:/users/ryanf/.platformio/packages/toolchain-gccarmnoneeabi/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7e-m\libgcc.a(_arm_cmpsf2.o)
+                0x08000684                __gesf2
+                0x08000684                __gtsf2
+                0x0800068c                __lesf2
+                0x0800068c                __ltsf2
+                0x08000694                __nesf2
+                0x08000694                __eqsf2
+                0x08000694                __cmpsf2
+                0x080006f4                __aeabi_cfrcmple
+                0x080006fc                __aeabi_cfcmpeq
+                0x080006fc                __aeabi_cfcmple
+                0x0800070c                __aeabi_fcmpeq
+                0x08000720                __aeabi_fcmplt
+                0x08000734                __aeabi_fcmple
+                0x08000748                __aeabi_fcmpge
+                0x0800075c                __aeabi_fcmpgt
+ .text          0x08000770       0x4c c:/users/ryanf/.platformio/packages/toolchain-gccarmnoneeabi/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7e-m\libgcc.a(_arm_fixsfsi.o)
+                0x08000770                __aeabi_f2iz
+                0x08000770                __fixsfsi
+ .text          0x080007bc       0x40 c:/users/ryanf/.platformio/packages/toolchain-gccarmnoneeabi/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7e-m\libgcc.a(_arm_fixunssfsi.o)
+                0x080007bc                __fixunssfsi
+                0x080007bc                __aeabi_f2uiz
  *(.text*)
  .text.Reset_Handler
-                0x08000710       0x50 .pio\build\genericSTM32F303CB\FrameworkCMSIS\gcc\startup_stm32f303xc.o
-                0x08000710                Reset_Handler
+                0x080007fc       0x50 .pio\build\genericSTM32F303CB\FrameworkCMSIS\gcc\startup_stm32f303xc.o
+                0x080007fc                Reset_Handler
  .text.Default_Handler
-                0x08000760        0x2 .pio\build\genericSTM32F303CB\FrameworkCMSIS\gcc\startup_stm32f303xc.o
-                0x08000760                RTC_Alarm_IRQHandler
-                0x08000760                TIM8_TRG_COM_IRQHandler
-                0x08000760                TIM8_CC_IRQHandler
-                0x08000760                DebugMon_Handler
-                0x08000760                TIM1_CC_IRQHandler
-                0x08000760                HardFault_Handler
-                0x08000760                USB_HP_IRQHandler
-                0x08000760                SysTick_Handler
-                0x08000760                PVD_IRQHandler
-                0x08000760                TAMP_STAMP_IRQHandler
-                0x08000760                PendSV_Handler
-                0x08000760                NMI_Handler
-                0x08000760                EXTI3_IRQHandler
-                0x08000760                USB_HP_CAN_TX_IRQHandler
-                0x08000760                EXTI0_IRQHandler
-                0x08000760                I2C2_EV_IRQHandler
-                0x08000760                FPU_IRQHandler
-                0x08000760                TIM1_UP_TIM16_IRQHandler
-                0x08000760                UsageFault_Handler
-                0x08000760                SPI1_IRQHandler
-                0x08000760                CAN_SCE_IRQHandler
-                0x08000760                TIM6_DAC_IRQHandler
-                0x08000760                TIM8_UP_IRQHandler
-                0x08000760                DMA2_Channel2_IRQHandler
-                0x08000760                DMA1_Channel4_IRQHandler
-                0x08000760                USART3_IRQHandler
-                0x08000760                DMA1_Channel7_IRQHandler
-                0x08000760                UART5_IRQHandler
-                0x08000760                ADC3_IRQHandler
-                0x08000760                TIM4_IRQHandler
-                0x08000760                CAN_RX1_IRQHandler
-                0x08000760                DMA2_Channel1_IRQHandler
-                0x08000760                I2C1_EV_IRQHandler
-                0x08000760                DMA1_Channel6_IRQHandler
-                0x08000760                UART4_IRQHandler
-                0x08000760                DMA2_Channel4_IRQHandler
-                0x08000760                TIM3_IRQHandler
-                0x08000760                RCC_IRQHandler
-                0x08000760                DMA1_Channel1_IRQHandler
-                0x08000760                Default_Handler
-                0x08000760                USBWakeUp_RMP_IRQHandler
-                0x08000760                EXTI15_10_IRQHandler
-                0x08000760                TIM7_IRQHandler
-                0x08000760                EXTI9_5_IRQHandler
-                0x08000760                RTC_WKUP_IRQHandler
-                0x08000760                SPI2_IRQHandler
-                0x08000760                USB_LP_CAN_RX0_IRQHandler
-                0x08000760                MemManage_Handler
-                0x08000760                SVC_Handler
-                0x08000760                DMA2_Channel5_IRQHandler
-                0x08000760                DMA1_Channel5_IRQHandler
-                0x08000760                USB_LP_IRQHandler
-                0x08000760                EXTI4_IRQHandler
-                0x08000760                TIM1_TRG_COM_TIM17_IRQHandler
-                0x08000760                DMA1_Channel3_IRQHandler
-                0x08000760                WWDG_IRQHandler
-                0x08000760                TIM2_IRQHandler
-                0x08000760                COMP7_IRQHandler
-                0x08000760                COMP1_2_3_IRQHandler
-                0x08000760                EXTI1_IRQHandler
-                0x08000760                USART2_IRQHandler
-                0x08000760                COMP4_5_6_IRQHandler
-                0x08000760                I2C2_ER_IRQHandler
-                0x08000760                DMA1_Channel2_IRQHandler
-                0x08000760                TIM8_BRK_IRQHandler
-                0x08000760                FLASH_IRQHandler
-                0x08000760                BusFault_Handler
-                0x08000760                USART1_IRQHandler
-                0x08000760                SPI3_IRQHandler
-                0x08000760                I2C1_ER_IRQHandler
-                0x08000760                USBWakeUp_IRQHandler
-                0x08000760                DMA2_Channel3_IRQHandler
-                0x08000760                EXTI2_TSC_IRQHandler
-                0x08000760                TIM1_BRK_TIM15_IRQHandler
+                0x0800084c        0x2 .pio\build\genericSTM32F303CB\FrameworkCMSIS\gcc\startup_stm32f303xc.o
+                0x0800084c                RTC_Alarm_IRQHandler
+                0x0800084c                TIM8_TRG_COM_IRQHandler
+                0x0800084c                TIM8_CC_IRQHandler
+                0x0800084c                DebugMon_Handler
+                0x0800084c                TIM1_CC_IRQHandler
+                0x0800084c                HardFault_Handler
+                0x0800084c                USB_HP_IRQHandler
+                0x0800084c                SysTick_Handler
+                0x0800084c                PVD_IRQHandler
+                0x0800084c                TAMP_STAMP_IRQHandler
+                0x0800084c                PendSV_Handler
+                0x0800084c                NMI_Handler
+                0x0800084c                EXTI3_IRQHandler
+                0x0800084c                USB_HP_CAN_TX_IRQHandler
+                0x0800084c                EXTI0_IRQHandler
+                0x0800084c                I2C2_EV_IRQHandler
+                0x0800084c                FPU_IRQHandler
+                0x0800084c                TIM1_UP_TIM16_IRQHandler
+                0x0800084c                UsageFault_Handler
+                0x0800084c                SPI1_IRQHandler
+                0x0800084c                CAN_SCE_IRQHandler
+                0x0800084c                TIM6_DAC_IRQHandler
+                0x0800084c                TIM8_UP_IRQHandler
+                0x0800084c                DMA2_Channel2_IRQHandler
+                0x0800084c                DMA1_Channel4_IRQHandler
+                0x0800084c                USART3_IRQHandler
+                0x0800084c                DMA1_Channel7_IRQHandler
+                0x0800084c                UART5_IRQHandler
+                0x0800084c                ADC3_IRQHandler
+                0x0800084c                TIM4_IRQHandler
+                0x0800084c                CAN_RX1_IRQHandler
+                0x0800084c                DMA2_Channel1_IRQHandler
+                0x0800084c                I2C1_EV_IRQHandler
+                0x0800084c                DMA1_Channel6_IRQHandler
+                0x0800084c                UART4_IRQHandler
+                0x0800084c                DMA2_Channel4_IRQHandler
+                0x0800084c                TIM3_IRQHandler
+                0x0800084c                RCC_IRQHandler
+                0x0800084c                DMA1_Channel1_IRQHandler
+                0x0800084c                Default_Handler
+                0x0800084c                USBWakeUp_RMP_IRQHandler
+                0x0800084c                EXTI15_10_IRQHandler
+                0x0800084c                TIM7_IRQHandler
+                0x0800084c                EXTI9_5_IRQHandler
+                0x0800084c                RTC_WKUP_IRQHandler
+                0x0800084c                SPI2_IRQHandler
+                0x0800084c                USB_LP_CAN_RX0_IRQHandler
+                0x0800084c                MemManage_Handler
+                0x0800084c                SVC_Handler
+                0x0800084c                DMA2_Channel5_IRQHandler
+                0x0800084c                DMA1_Channel5_IRQHandler
+                0x0800084c                USB_LP_IRQHandler
+                0x0800084c                EXTI4_IRQHandler
+                0x0800084c                TIM1_TRG_COM_TIM17_IRQHandler
+                0x0800084c                DMA1_Channel3_IRQHandler
+                0x0800084c                WWDG_IRQHandler
+                0x0800084c                TIM2_IRQHandler
+                0x0800084c                COMP7_IRQHandler
+                0x0800084c                COMP1_2_3_IRQHandler
+                0x0800084c                EXTI1_IRQHandler
+                0x0800084c                USART2_IRQHandler
+                0x0800084c                COMP4_5_6_IRQHandler
+                0x0800084c                I2C2_ER_IRQHandler
+                0x0800084c                DMA1_Channel2_IRQHandler
+                0x0800084c                TIM8_BRK_IRQHandler
+                0x0800084c                FLASH_IRQHandler
+                0x0800084c                BusFault_Handler
+                0x0800084c                USART1_IRQHandler
+                0x0800084c                SPI3_IRQHandler
+                0x0800084c                I2C1_ER_IRQHandler
+                0x0800084c                USBWakeUp_IRQHandler
+                0x0800084c                DMA2_Channel3_IRQHandler
+                0x0800084c                EXTI2_TSC_IRQHandler
+                0x0800084c                TIM1_BRK_TIM15_IRQHandler
  .text.SystemInit
-                0x08000762        0x2 .pio\build\genericSTM32F303CB\FrameworkCMSIS\system_stm32f3xx.o
-                0x08000762                SystemInit
+                0x0800084e        0x2 .pio\build\genericSTM32F303CB\FrameworkCMSIS\system_stm32f3xx.o
+                0x0800084e                SystemInit
  .text.ADC1_2_IRQHandler
-                0x08000764       0x58 .pio\build\genericSTM32F303CB\src\interrupt_handlers.o
-                0x08000764                ADC1_2_IRQHandler
+                0x08000850       0x58 .pio\build\genericSTM32F303CB\src\interrupt_handlers.o
+                0x08000850                ADC1_2_IRQHandler
  .text.ADC4_IRQHandler
-                0x080007bc       0x90 .pio\build\genericSTM32F303CB\src\interrupt_handlers.o
-                0x080007bc                ADC4_IRQHandler
+                0x080008a8       0x90 .pio\build\genericSTM32F303CB\src\interrupt_handlers.o
+                0x080008a8                ADC4_IRQHandler
  .text._Z7initESCv
-                0x0800084c       0x26 .pio\build\genericSTM32F303CB\src\main.o
-                0x0800084c                initESC()
+                0x08000938       0x26 .pio\build\genericSTM32F303CB\src\main.o
+                0x08000938                initESC()
  .text.startup.main
-                0x08000872        0x8 .pio\build\genericSTM32F303CB\src\main.o
-                0x08000872                main
- *fill*         0x0800087a        0x2 
+                0x0800095e        0x8 .pio\build\genericSTM32F303CB\src\main.o
+                0x0800095e                main
+ *fill*         0x08000966        0x2 
  .text._Z10FOC_updatev
-                0x0800087c      0x1cc .pio\build\genericSTM32F303CB\lib9bc\libesc.a(control.o)
-                0x0800087c                FOC_update()
+                0x08000968      0x198 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(control.o)
+                0x08000968                FOC_update()
  .text.startup._GLOBAL__sub_I_motorState
-                0x08000a48       0x5c .pio\build\genericSTM32F303CB\lib9bc\libesc.a(control.o)
+                0x08000b00       0x5c .pio\build\genericSTM32F303CB\lib9bc\libesc.a(control.o)
  .text._Z17enableSystemClockv
-                0x08000aa4       0x70 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(initializations.o)
-                0x08000aa4                enableSystemClock()
+                0x08000b5c       0x70 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(initializations.o)
+                0x08000b5c                enableSystemClock()
  .text._Z15configureClocksv
-                0x08000b14       0x70 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(initializations.o)
-                0x08000b14                configureClocks()
+                0x08000bcc       0x70 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(initializations.o)
+                0x08000bcc                configureClocks()
  .text._Z9enableFPUv
-                0x08000b84       0x24 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(initializations.o)
-                0x08000b84                enableFPU()
+                0x08000c3c       0x24 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(initializations.o)
+                0x08000c3c                enableFPU()
  .text._Z18LEDStartupSequencev
-                0x08000ba8       0xa4 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(initializations.o)
-                0x08000ba8                LEDStartupSequence()
+                0x08000c60       0xa4 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(initializations.o)
+                0x08000c60                LEDStartupSequence()
  .text._Z13configureLEDsv
-                0x08000c4c       0x48 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(initializations.o)
-                0x08000c4c                configureLEDs()
+                0x08000d04       0x48 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(initializations.o)
+                0x08000d04                configureLEDs()
  .text._Z9enablePWMv
-                0x08000c94       0xf0 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(initializations.o)
-                0x08000c94                enablePWM()
+                0x08000d4c       0xf0 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(initializations.o)
+                0x08000d4c                enablePWM()
  .text._Z12configurePWMv
-                0x08000d84      0x148 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(initializations.o)
-                0x08000d84                configurePWM()
+                0x08000e3c      0x148 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(initializations.o)
+                0x08000e3c                configurePWM()
  .text._Z12configureADCv
-                0x08000ecc      0x194 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(initializations.o)
-                0x08000ecc                configureADC()
+                0x08000f84      0x194 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(initializations.o)
+                0x08000f84                configureADC()
  .text._Z19configureInterruptsv
-                0x08001060       0x48 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(initializations.o)
-                0x08001060                configureInterrupts()
+                0x08001118       0x48 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(initializations.o)
+                0x08001118                configureInterrupts()
  .text.__libc_init_array
-                0x080010a8       0x48 c:/users/ryanf/.platformio/packages/toolchain-gccarmnoneeabi/bin/../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m\libc_nano.a(lib_a-init.o)
-                0x080010a8                __libc_init_array
+                0x08001160       0x48 c:/users/ryanf/.platformio/packages/toolchain-gccarmnoneeabi/bin/../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m\libc_nano.a(lib_a-init.o)
+                0x08001160                __libc_init_array
  *(.glue_7)
- .glue_7        0x080010f0        0x0 linker stubs
+ .glue_7        0x080011a8        0x0 linker stubs
  *(.glue_7t)
- .glue_7t       0x080010f0        0x0 linker stubs
+ .glue_7t       0x080011a8        0x0 linker stubs
  *(.eh_frame)
- .eh_frame      0x080010f0        0x0 c:/users/ryanf/.platformio/packages/toolchain-gccarmnoneeabi/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7e-m/crtbegin.o
+ .eh_frame      0x080011a8        0x0 c:/users/ryanf/.platformio/packages/toolchain-gccarmnoneeabi/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7e-m/crtbegin.o
  *(.init)
- .init          0x080010f0        0x4 c:/users/ryanf/.platformio/packages/toolchain-gccarmnoneeabi/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7e-m/crti.o
-                0x080010f0                _init
- .init          0x080010f4        0x8 c:/users/ryanf/.platformio/packages/toolchain-gccarmnoneeabi/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7e-m/crtn.o
+ .init          0x080011a8        0x4 c:/users/ryanf/.platformio/packages/toolchain-gccarmnoneeabi/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7e-m/crti.o
+                0x080011a8                _init
+ .init          0x080011ac        0x8 c:/users/ryanf/.platformio/packages/toolchain-gccarmnoneeabi/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7e-m/crtn.o
  *(.fini)
- .fini          0x080010fc        0x4 c:/users/ryanf/.platformio/packages/toolchain-gccarmnoneeabi/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7e-m/crti.o
-                0x080010fc                _fini
- .fini          0x08001100        0x8 c:/users/ryanf/.platformio/packages/toolchain-gccarmnoneeabi/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7e-m/crtn.o
-                0x08001108                . = ALIGN (0x4)
-                0x08001108                _etext = .
+ .fini          0x080011b4        0x4 c:/users/ryanf/.platformio/packages/toolchain-gccarmnoneeabi/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7e-m/crti.o
+                0x080011b4                _fini
+ .fini          0x080011b8        0x8 c:/users/ryanf/.platformio/packages/toolchain-gccarmnoneeabi/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7e-m/crtn.o
+                0x080011c0                . = ALIGN (0x4)
+                0x080011c0                _etext = .
 
-.vfp11_veneer   0x08001108        0x0
- .vfp11_veneer  0x08001108        0x0 linker stubs
+.vfp11_veneer   0x080011c0        0x0
+ .vfp11_veneer  0x080011c0        0x0 linker stubs
 
-.v4_bx          0x08001108        0x0
- .v4_bx         0x08001108        0x0 linker stubs
+.v4_bx          0x080011c0        0x0
+ .v4_bx         0x080011c0        0x0 linker stubs
 
-.iplt           0x08001108        0x0
- .iplt          0x08001108        0x0 c:/users/ryanf/.platformio/packages/toolchain-gccarmnoneeabi/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7e-m/crtbegin.o
+.iplt           0x080011c0        0x0
+ .iplt          0x080011c0        0x0 c:/users/ryanf/.platformio/packages/toolchain-gccarmnoneeabi/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7e-m/crtbegin.o
 
-.rodata         0x08001108     0x1000
-                0x08001108                . = ALIGN (0x4)
+.rodata         0x080011c0     0x1000
+                0x080011c0                . = ALIGN (0x4)
  *(.rodata)
  *(.rodata*)
  .rodata._ZL8sinTable
-                0x08001108     0x1000 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(control.o)
-                0x08002108                . = ALIGN (0x4)
+                0x080011c0     0x1000 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(control.o)
+                0x080021c0                . = ALIGN (0x4)
 
-.rel.dyn        0x08002108        0x0
- .rel.iplt      0x08002108        0x0 c:/users/ryanf/.platformio/packages/toolchain-gccarmnoneeabi/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7e-m/crtbegin.o
+.rel.dyn        0x080021c0        0x0
+ .rel.iplt      0x080021c0        0x0 c:/users/ryanf/.platformio/packages/toolchain-gccarmnoneeabi/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7e-m/crtbegin.o
 
-.ARM.extab      0x08002108        0x0
-                0x08002108                . = ALIGN (0x4)
+.ARM.extab      0x080021c0        0x0
+                0x080021c0                . = ALIGN (0x4)
  *(.ARM.extab* .gnu.linkonce.armextab.*)
-                0x08002108                . = ALIGN (0x4)
+                0x080021c0                . = ALIGN (0x4)
 
-.ARM            0x08002108        0x0
-                0x08002108                . = ALIGN (0x4)
-                0x08002108                __exidx_start = .
+.ARM            0x080021c0        0x0
+                0x080021c0                . = ALIGN (0x4)
+                0x080021c0                __exidx_start = .
  *(.ARM.exidx*)
-                0x08002108                __exidx_end = .
-                0x08002108                . = ALIGN (0x4)
+                0x080021c0                __exidx_end = .
+                0x080021c0                . = ALIGN (0x4)
 
-.preinit_array  0x08002108        0x0
-                0x08002108                . = ALIGN (0x4)
-                0x08002108                PROVIDE (__preinit_array_start, .)
+.preinit_array  0x080021c0        0x0
+                0x080021c0                . = ALIGN (0x4)
+                0x080021c0                PROVIDE (__preinit_array_start, .)
  *(.preinit_array*)
-                0x08002108                PROVIDE (__preinit_array_end, .)
-                0x08002108                . = ALIGN (0x4)
+                0x080021c0                PROVIDE (__preinit_array_end, .)
+                0x080021c0                . = ALIGN (0x4)
 
-.init_array     0x08002108        0x8
-                0x08002108                . = ALIGN (0x4)
-                0x08002108                PROVIDE (__init_array_start, .)
+.init_array     0x080021c0        0x8
+                0x080021c0                . = ALIGN (0x4)
+                0x080021c0                PROVIDE (__init_array_start, .)
  *(SORT_BY_NAME(.init_array.*))
  *(.init_array*)
- .init_array    0x08002108        0x4 c:/users/ryanf/.platformio/packages/toolchain-gccarmnoneeabi/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7e-m/crtbegin.o
- .init_array    0x0800210c        0x4 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(control.o)
-                0x08002110                PROVIDE (__init_array_end, .)
-                0x08002110                . = ALIGN (0x4)
+ .init_array    0x080021c0        0x4 c:/users/ryanf/.platformio/packages/toolchain-gccarmnoneeabi/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7e-m/crtbegin.o
+ .init_array    0x080021c4        0x4 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(control.o)
+                0x080021c8                PROVIDE (__init_array_end, .)
+                0x080021c8                . = ALIGN (0x4)
 
-.fini_array     0x08002110        0x4
-                0x08002110                . = ALIGN (0x4)
+.fini_array     0x080021c8        0x4
+                0x080021c8                . = ALIGN (0x4)
                 [!provide]                PROVIDE (__fini_array_start, .)
  *(SORT_BY_NAME(.fini_array.*))
  *(.fini_array*)
- .fini_array    0x08002110        0x4 c:/users/ryanf/.platformio/packages/toolchain-gccarmnoneeabi/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7e-m/crtbegin.o
+ .fini_array    0x080021c8        0x4 c:/users/ryanf/.platformio/packages/toolchain-gccarmnoneeabi/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7e-m/crtbegin.o
                 [!provide]                PROVIDE (__fini_array_end, .)
-                0x08002114                . = ALIGN (0x4)
-                0x08002114                _sidata = LOADADDR (.data)
+                0x080021cc                . = ALIGN (0x4)
+                0x080021cc                _sidata = LOADADDR (.data)
 
-.data           0x20000000        0x0 load address 0x08002114
+.data           0x20000000        0x0 load address 0x080021cc
                 0x20000000                . = ALIGN (0x4)
                 0x20000000                _sdata = .
  *(.data)
@@ -426,12 +444,12 @@ LOAD c:/users/ryanf/.platformio/packages/toolchain-gccarmnoneeabi/bin/../lib/gcc
  *(.RamFunc*)
                 0x20000000                . = ALIGN (0x4)
                 0x20000000                _edata = .
-                0x08002114                _siccmram = LOADADDR (.ccmram)
+                0x080021cc                _siccmram = LOADADDR (.ccmram)
 
-.igot.plt       0x20000000        0x0 load address 0x08002114
+.igot.plt       0x20000000        0x0 load address 0x080021cc
  .igot.plt      0x20000000        0x0 c:/users/ryanf/.platformio/packages/toolchain-gccarmnoneeabi/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7e-m/crtbegin.o
 
-.ccmram         0x10000000        0x0 load address 0x08002114
+.ccmram         0x10000000        0x0 load address 0x080021cc
                 0x10000000                . = ALIGN (0x4)
                 0x10000000                _sccmram = .
  *(.ccmram)
@@ -440,7 +458,7 @@ LOAD c:/users/ryanf/.platformio/packages/toolchain-gccarmnoneeabi/bin/../lib/gcc
                 0x10000000                _eccmram = .
                 0x10000000                . = ALIGN (0x4)
 
-.bss            0x20000000       0xec
+.bss            0x20000000       0xf4
                 0x20000000                _sbss = .
                 0x20000000                __bss_start__ = _sbss
  *(.bss)
@@ -477,31 +495,39 @@ LOAD c:/users/ryanf/.platformio/packages/toolchain-gccarmnoneeabi/bin/../lib/gcc
                 0x200000c0                Vrot
  .bss.Vstat     0x200000c8        0x8 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(control.o)
                 0x200000c8                Vstat
- .bss._ZL3cos   0x200000d0        0x4 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(control.o)
- .bss._ZL3sin   0x200000d4        0x4 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(control.o)
- .bss.angle     0x200000d8        0x4 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(control.o)
-                0x200000d8                angle
+ .bss._ZL13virtual_angle
+                0x200000d0        0x4 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(control.o)
+ .bss._ZL7_cosVal
+                0x200000d4        0x4 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(control.o)
+ .bss._ZL7_sinVal
+                0x200000d8        0x4 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(control.o)
+ .bss.angle     0x200000dc        0x4 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(control.o)
+                0x200000dc                angle
  .bss.frameCount
-                0x200000dc        0x4 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(control.o)
-                0x200000dc                frameCount
- .bss.signals   0x200000e0        0xc .pio\build\genericSTM32F303CB\lib9bc\libesc.a(control.o)
-                0x200000e0                signals
+                0x200000e0        0x4 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(control.o)
+                0x200000e0                frameCount
+ .bss.motorState
+                0x200000e4        0x1 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(control.o)
+                0x200000e4                motorState
+ *fill*         0x200000e5        0x3 
+ .bss.signals   0x200000e8        0xc .pio\build\genericSTM32F303CB\lib9bc\libesc.a(control.o)
+                0x200000e8                signals
  *(COMMON)
-                0x200000ec                . = ALIGN (0x4)
-                0x200000ec                _ebss = .
-                0x200000ec                __bss_end__ = _ebss
+                0x200000f4                . = ALIGN (0x4)
+                0x200000f4                _ebss = .
+                0x200000f4                __bss_end__ = _ebss
 
 ._user_heap_stack
-                0x200000ec      0x604
-                0x200000f0                . = ALIGN (0x8)
- *fill*         0x200000ec        0x4 
+                0x200000f4      0x604
+                0x200000f8                . = ALIGN (0x8)
+ *fill*         0x200000f4        0x4 
                 [!provide]                PROVIDE (end, .)
                 [!provide]                PROVIDE (_end, .)
-                0x200002f0                . = (. + _Min_Heap_Size)
- *fill*         0x200000f0      0x200 
-                0x200006f0                . = (. + _Min_Stack_Size)
- *fill*         0x200002f0      0x400 
-                0x200006f0                . = ALIGN (0x8)
+                0x200002f8                . = (. + _Min_Heap_Size)
+ *fill*         0x200000f8      0x200 
+                0x200006f8                . = (. + _Min_Stack_Size)
+ *fill*         0x200002f8      0x400 
+                0x200006f8                . = ALIGN (0x8)
 
 /DISCARD/
  libc.a(*)
@@ -532,13 +558,15 @@ LOAD c:/users/ryanf/.platformio/packages/toolchain-gccarmnoneeabi/bin/../lib/gcc
  .ARM.attributes
                 0x0000018a       0x1e c:/users/ryanf/.platformio/packages/toolchain-gccarmnoneeabi/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7e-m\libgcc.a(_arm_muldivsf3.o)
  .ARM.attributes
-                0x000001a8       0x1e c:/users/ryanf/.platformio/packages/toolchain-gccarmnoneeabi/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7e-m\libgcc.a(_arm_fixsfsi.o)
+                0x000001a8       0x1e c:/users/ryanf/.platformio/packages/toolchain-gccarmnoneeabi/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7e-m\libgcc.a(_arm_cmpsf2.o)
  .ARM.attributes
-                0x000001c6       0x1e c:/users/ryanf/.platformio/packages/toolchain-gccarmnoneeabi/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7e-m\libgcc.a(_arm_fixunssfsi.o)
+                0x000001c6       0x1e c:/users/ryanf/.platformio/packages/toolchain-gccarmnoneeabi/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7e-m\libgcc.a(_arm_fixsfsi.o)
  .ARM.attributes
-                0x000001e4       0x2e c:/users/ryanf/.platformio/packages/toolchain-gccarmnoneeabi/bin/../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m\libc_nano.a(lib_a-init.o)
+                0x000001e4       0x1e c:/users/ryanf/.platformio/packages/toolchain-gccarmnoneeabi/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7e-m\libgcc.a(_arm_fixunssfsi.o)
  .ARM.attributes
-                0x00000212       0x1e c:/users/ryanf/.platformio/packages/toolchain-gccarmnoneeabi/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7e-m/crtn.o
+                0x00000202       0x2e c:/users/ryanf/.platformio/packages/toolchain-gccarmnoneeabi/bin/../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m\libc_nano.a(lib_a-init.o)
+ .ARM.attributes
+                0x00000230       0x1e c:/users/ryanf/.platformio/packages/toolchain-gccarmnoneeabi/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7e-m/crtn.o
 OUTPUT(.pio\build\genericSTM32F303CB\firmware.elf elf32-littlearm)
 
 .comment        0x00000000       0x7e
@@ -549,9 +577,10 @@ OUTPUT(.pio\build\genericSTM32F303CB\firmware.elf elf32-littlearm)
  .comment       0x0000007e       0x7f .pio\build\genericSTM32F303CB\lib9bc\libesc.a(control.o)
  .comment       0x0000007e       0x7f .pio\build\genericSTM32F303CB\lib9bc\libesc.a(initializations.o)
 
-.debug_frame    0x00000000       0xf8
+.debug_frame    0x00000000      0x1c0
  .debug_frame   0x00000000       0x4c c:/users/ryanf/.platformio/packages/toolchain-gccarmnoneeabi/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7e-m\libgcc.a(_arm_addsubsf3.o)
  .debug_frame   0x0000004c       0x38 c:/users/ryanf/.platformio/packages/toolchain-gccarmnoneeabi/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7e-m\libgcc.a(_arm_muldivsf3.o)
- .debug_frame   0x00000084       0x24 c:/users/ryanf/.platformio/packages/toolchain-gccarmnoneeabi/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7e-m\libgcc.a(_arm_fixsfsi.o)
- .debug_frame   0x000000a8       0x24 c:/users/ryanf/.platformio/packages/toolchain-gccarmnoneeabi/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7e-m\libgcc.a(_arm_fixunssfsi.o)
- .debug_frame   0x000000cc       0x2c c:/users/ryanf/.platformio/packages/toolchain-gccarmnoneeabi/bin/../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m\libc_nano.a(lib_a-init.o)
+ .debug_frame   0x00000084       0xc8 c:/users/ryanf/.platformio/packages/toolchain-gccarmnoneeabi/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7e-m\libgcc.a(_arm_cmpsf2.o)
+ .debug_frame   0x0000014c       0x24 c:/users/ryanf/.platformio/packages/toolchain-gccarmnoneeabi/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7e-m\libgcc.a(_arm_fixsfsi.o)
+ .debug_frame   0x00000170       0x24 c:/users/ryanf/.platformio/packages/toolchain-gccarmnoneeabi/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7e-m\libgcc.a(_arm_fixunssfsi.o)
+ .debug_frame   0x00000194       0x2c c:/users/ryanf/.platformio/packages/toolchain-gccarmnoneeabi/bin/../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m\libc_nano.a(lib_a-init.o)

@@ -34,7 +34,7 @@ volatile uint64_t frameCount = 0;
 
 void FOC_update() {
     // Stationary Frame Transform
-    clarke(I, Istat);
+    // clarke(I, Istat);
 
     if (frameCount && (0b1111) == (0b1000)) {
         SMO_update();
@@ -61,6 +61,8 @@ void FOC_update() {
     //         angle = getAngle();
     //         break;
     // }
+    incrementVirtualAngle(1.0f); // Slowly ramp up virtual angle to encourage movement
+    angle = getAngle();
 
     // Rotating Frame Transform
     park(Istat, angle, Irot);
@@ -83,7 +85,7 @@ void FOC_update() {
 
     // Back to Natural Frame and PWM Outputs
     // At some point, switch to Space Vector PWM for better performance
-    clarke_inverse(Vstat, signals);
+    // clarke_inverse(Vstat, signals);
 
     setDutyCycles(signals);
 }
