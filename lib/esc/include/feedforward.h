@@ -1,4 +1,7 @@
-#include <profiler.h>
+#ifndef FEEDFORWARD_H
+#define FEEDFORWARD_H
+#pragma once
+
 #include <control.h>
 
 // Feedforward Control
@@ -21,3 +24,5 @@ class Feedforward {
         float kV; // Velocity gain
         float kA; // Acceleration gain
 };
+
+#endif

@@ -1,11 +1,29 @@
 #include <common.h>
+#pragma once
 
 #define RCC 0x40021000UL // RCC Base Address
 
 #define RCC_CR 0x00 // CR Offset
 #define RCC_CFGR 0x04 // CFGR Offset
+#define RCC_CFGR2 0x2C // CFGR2 Offset
 #define RCC_AHBENR 0x14 // AHBENR Offset
 #define RCC_APB2ENR 0x18 // APB2ENR Offset
+
+#define FLASH 0x40022000UL // FLASH Base Address
+
+#define DEMCR           (*((volatile uint32_t*)0xE000EDFC))
+#define TRCENA          (1UL << 24)
+
+#define ITM_STIM0       (*((volatile uint32_t*)0xE0000000))
+#define ITM_TER         (*((volatile uint32_t*)0xE0000E40)) // Trace Enable
+#define ITM_TCR         (*((volatile uint32_t*)0xE0000E80)) // Control Register
+#define ITM_LAR         (*((volatile uint32_t*)0xE0000FB0))
+
+#define TPIU_ACPR       (*((volatile uint32_t*)0xE000E010)) // Async Clock Prescaler
+#define TPIU_SPPR       (*((volatile uint32_t*)0xE000E0F0)) // Selected Pin Protocol
+#define TPIU_FFCR       (*((volatile uint32_t*)0xE000E304)) // Formatter and Flush Control
+
+#define DWT_CTRL        (*((volatile uint32_t*)0xE0001000))
 
 #define SYSCFG 0x40010000UL // SYSCFG Base Address
 
@@ -35,9 +53,12 @@
 #define GPIO_BRR 0x28 // GPIOx_BRR Offset
 
 #define ADC1 0x50000000UL // ADC1 Base Address
-#define ADC2 0x50000200UL // ADC2 Base Address
+#define ADC2 0x50000100UL // ADC2 Base Address
 #define ADC3 0x50000400UL // ADC3 Base Address
-#define ADC4 0x50000600UL // ADC4 Base Address
+#define ADC4 0x50000500UL // ADC4 Base Address
+
+#define ADC12_COMMON_CCR 0x50000308UL
+#define ADC34_COMMON_CCR 0x50000708UL
 
 #define ADC1_2_IRQn 18 // IRQn for ADC1_2
 #define ADC4_IRQn 61 // IRQn for ADC4
@@ -209,16 +230,21 @@
 #define NVIC_IPR59 0x4EC
 #define NVIC_STIR  0xE00 // Software Trigget Interrupt Register Offset
 
-#define FPU_CPACR 0xE0000ED88
+#define FPU_CPACR 0xE000ED88
 #define FPU_FPCCR 0xE000EF34
 #define FPU_FPCAR 0xE000EF38
 #define FPU_FPDSCR 0xE000EF3C
 
-extern "C" void NVIC_EnableIRQ(int IRQn) {
+inline void NVIC_EnableIRQ(int IRQn) {
     *((volatile uint32_t*) (NVIC + ((IRQn >> 5) * 4))) = (1 << (IRQn & 0x1F));
 }
 
-extern "C" void NVIC_SetPriority(int IRQn, uint8_t priority) {
-    volatile uint8_t* ipr = (volatile uint8_t*) 0xE000E400;
+inline void NVIC_SetPriority(int IRQn, uint8_t priority) {
+    volatile uint8_t* ipr = (volatile uint8_t*) 0xE000E400; 
+    
     ipr[IRQn] = (uint8_t)((priority << 4) & 0xF0);
+}
+
+inline void NVIC_ClearPendingIRQ(int IRQn) {
+    *((volatile uint32_t*) (0xE000E100 + 0x180 + ((IRQn >> 5) * 4))) = (1 << (IRQn & 0x1F));
 }

@@ -1,8 +1,8 @@
 #ifndef PROFILER_H
 #define PROFILER_H
+#pragma once
 
 #include <common.h>
-#include <profiler.h>
 #include <constants.h>
 
 struct Profile {

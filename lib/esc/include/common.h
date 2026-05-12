@@ -1,5 +1,6 @@
 #ifndef COMMON_H
 #define COMMON_H
+#pragma once
 
 #define uint8_t unsigned char
 #define uint16_t unsigned short

@@ -1,9 +1,10 @@
 #ifndef CONSTANTS_H
 #define CONSTANTS_H
-#include <common.h>
+#pragma once
+#include <esc.h>
 
 // Mathematical
-#define PI 3.14159265358979323846
+#define PI 3.14159265359f
 
 // Clock
 #define SYSCLK 64000000UL // 64MHz

@@ -1,4 +1,10 @@
+#ifndef PID_H
+#define PID_H
+#pragma once
+
 #include <constants.h>
+#include <common.h>
+#include <profiler.h>
 
 class PIDController {
     public:
@@ -9,7 +15,7 @@ class PIDController {
             float error = setpoint - measured_value;
 
             integral += error * dt;
-            derivative = (error - previous_error) / dt;
+            derivative = (error - previous_error) * PWM;
             previous_error = error;
 
             float output = kp * error + ki * integral + kd * derivative;
@@ -33,3 +39,5 @@ class PIDController {
         float integral;
         float derivative;
 };
+
+#endif

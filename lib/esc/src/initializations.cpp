@@ -1,7 +1,4 @@
-#include <stm32f303cbt6.h>
-#include <constants.h>
-#include <common.h>
-#include <control.h>
+#include <esc.h>
 
 /* PWM Pins
 * PA8 - TIM1_CH1 - Motor Phase A High-Side
@@ -28,12 +25,20 @@ void enableSystemClock() {
     // Configure main system clock
     *((volatile uint32_t*) (RCC + RCC_CR)) |= (1U << 0); // HSI ON
     while (! (*((volatile uint32_t*) (RCC + RCC_CR)) & (1U << 1))); // Wait for HSI to be ready
+    
+    *((volatile uint32_t*) (FLASH + 0b00)) |= (0b010 << 0); // Flash Latency = 2 WS (64MHz)
 
     *((volatile uint32_t*) (RCC + RCC_CFGR)) &= ~(1U << 16); // PLL source = HSI/2 (4MHz)
     *((volatile uint32_t*) (RCC + RCC_CFGR)) |= (0b1110 << 18); // PLL input clock x 9 (4MHz * 16 = 64MHz)
 
+    *((volatile uint32_t*) (RCC + RCC_CR)) |= (1U << 24); // PLL ON 
+    while (!(*((volatile uint32_t*) (RCC + RCC_CR)) & (1U << 25))); // Wait for PLL to be ready
+
     *((volatile uint32_t*) (RCC + RCC_CFGR)) |= (0b10 << 0); // SYSCLK Source = PLL
-    while (! (*((volatile uint32_t*) (RCC + RCC_CFGR)) & (0b10 << 2))); // Wait for SYSCLK source to be switched
+    while ((*((volatile uint32_t*) (RCC + RCC_CFGR)) & (0b11 << 2)) != (0b10 << 2)); // Wait for SYSCLK source to be switched
+
+    *((volatile uint32_t*) (RCC + RCC_CFGR2)) &= ~(0b11111 << 0); // Clear bits for ADC12 prescaler
+    *((volatile uint32_t*) (RCC + RCC_CFGR2)) |= (0b10000 << 0);
 
     // *** CLOCK IS NOW 64MHz ***
 }
@@ -47,35 +52,58 @@ void configureClocks() {
     *((volatile uint32_t*) (RCC + RCC_AHBENR)) |= (1U << 17); // Enable GPIOA Clock
     *((volatile uint32_t*) (RCC + RCC_AHBENR)) |= (1U << 18); // Enable GPIOB Clock
     *((volatile uint32_t*) (RCC + RCC_APB2ENR)) |= (1U << 11); // Enable TIM1 Clock
-    // *((volatile uint32_t*) (RCC + RCC_APB2ENR)) |= (1U << 14); // Enable USART1 Clock
+    *((volatile uint32_t*) (RCC + RCC_APB2ENR)) |= (1U << 14); // Enable USART1 Clock
     *((volatile uint32_t*) (RCC + RCC_AHBENR)) |= (1U << 28); // ADC12EN
     *((volatile uint32_t*) (RCC + RCC_AHBENR)) |= (1U << 29); // ADC34EN
+    for(volatile int i = 0; i < 1000; i++) __asm__("nop");
 }
 
 void enableFPU() {
-    // Enable CP10 & CP11 Coprocessors
-    *((volatile uint32_t*) (FPU_CPACR)) |= (0xF << 20);
+    volatile uint32_t *cpacr = (volatile uint32_t *)0xE000ED88;
+    *cpacr |= ((3U << 10 * 2) | (3U << 11 * 2)); // Set bits 20-23
 
-    // Ensure FPU is fully on
-    __asm volatile ("dsb"); // Ensure Memory Operations are Completed
-    __asm volatile ("isb"); // Flush Instruction Pipeline
+    __asm volatile ("dsb");
+    __asm volatile ("isb");
 
-    // Enable Lazy Stacking
-    *((volatile uint32_t*) (FPU_FPCCR)) |= (1U << 31) | (1U << 30);
+    volatile uint32_t *fpccr = (volatile uint32_t *)0xE000EF34;
+    *fpccr |= (1U << 31) | (1U << 30);
+}
+
+void LEDStartupSequence() {
+    *((volatile uint32_t*) (GPIOA + GPIO_BRR)) |= (1U << 0); // PA0 LOW
+    *((volatile uint32_t*) (GPIOA + GPIO_BSRR)) |= (1U << 1); // PA1 HIGH
+
+    for (volatile unsigned long i = 0; i < (unsigned) (SYSCLK/13 / 2); i++) { // ~0.5s delay at 64MHz
+        __asm__ volatile ("nop");
+    }
+    *((volatile uint32_t*) (GPIOA + GPIO_BSRR)) |= (1U << 0); // PA0 HIGH
+    *((volatile uint32_t*) (GPIOA + GPIO_BRR)) |= (1U << 1); // PA1 LOW
+
+    for (volatile unsigned long i = 0; i < (unsigned) (SYSCLK/13 / 8); i++) { // ~0.125s delay at 64MHz
+        __asm__ volatile ("nop");
+    }
+    *((volatile uint32_t*) (GPIOA + GPIO_BRR)) |= (1U << 0); // PA0 LOW
+    *((volatile uint32_t*) (GPIOA + GPIO_BSRR)) |= (1U << 1); // PA1 HIGH
+
+    for (volatile unsigned long i = 0; i < (unsigned) (SYSCLK/13 / 4); i++) { // ~0.125s delay at 64MHz
+        __asm__ volatile ("nop");
+    }
+    *((volatile uint32_t*) (GPIOA + GPIO_BRR)) |= (1U << 1); // PA1 LOW
 }
 
 void configureLEDs() {
-    *((volatile uint32_t*) (GPIOA + GPIO_MODER)) |= (0b01 << 0); // PA0 as Output (LED)
-    *((volatile uint32_t*) (GPIOA + GPIO_MODER)) |= (0b01 << 2); // PA1 as Output (LED)
+    *((volatile uint32_t*) (GPIOA + GPIO_MODER)) &= ~(0b11 << 0); // PA0 as Output (LED)
+    *((volatile uint32_t*) (GPIOA + GPIO_MODER)) |=  (0b01 << 0);
+    *((volatile uint32_t*) (GPIOA + GPIO_MODER)) &= ~(0b11 << 2); // PA1 as Output (LED)
+    *((volatile uint32_t*) (GPIOA + GPIO_MODER)) |=  (0b01 << 2);
 
     *((volatile uint32_t*) (GPIOA + GPIO_OSPEEDR)) |= (0b11 << 0); // PA0 High Speed
     *((volatile uint32_t*) (GPIOA + GPIO_OSPEEDR)) |= (0b11 << 2); // PA1 High Speed
 
-    // Set PA0 to High
-    *((volatile uint32_t*) (GPIOA + GPIO_BSRR)) |= (1U << 0); // PA0 High
+    *((volatile uint32_t*) (GPIOA + GPIO_BSRR)) |= (1U << 0); // PA0 HIGH
+    *((volatile uint32_t*) (GPIOA + GPIO_BSRR)) |= (1U << 1); // PA1 HIGH
 
-    // Set PA1 to Low
-    *((volatile uint32_t*) (GPIOA + GPIO_BRR)) |= (1U << 1); // PA1 Low
+    LEDStartupSequence();
 }
 
 void enablePWM() {
@@ -162,77 +190,104 @@ void configurePWM() {
     *((volatile uint32_t*) (TIM1 + TIM_CCR1)) = 0; // Set Duty Cycle for CH1
     *((volatile uint32_t*) (TIM1 + TIM_CCR2)) = 0; // Set Duty Cycle for CH2
     *((volatile uint32_t*) (TIM1 + TIM_CCR3)) = 0; // Set Duty Cycle for CH3
+    
+    *((volatile uint32_t*) (TIM1 + TIM_CR2)) &= ~(0b111 << 4); // Clear MMS bits
+    *((volatile uint32_t*) (TIM1 + TIM_CR2)) |=  (0b010 << 4); // Set MMS to 010 (Update)
+
+    // Center-Aligned Mode & Preload Enable
+    // CMS = 0b01 (Center-aligned mode 1, flags set on counting down)
+    *((volatile uint32_t*) (TIM1 + TIM_CR1)) |= (0b01 << 5) | (1U << 7);
+
+    // Dead-time and Main Output Enable (MOE)
+    *((volatile uint32_t*) (TIM1 + TIM_BDTR)) |= (26U << 0); // Deadtime
+    *((volatile uint32_t*) (TIM1 + TIM_BDTR)) |= (1U << 15); // MOE = 1
 
     *((volatile uint32_t*) (TIM1 + TIM_CR1)) |= (1U << 0); // Enable Counter
 }
 
 void configureADC() {
 
-    // Enable Internal Regulator
-    *((volatile uint32_t*) (ADC2 + ADC_CR)) &= ~(0b11 << 28); // Clear ADVREGEN bits
-    *((volatile uint32_t*) (ADC2 + ADC_CR)) |= (1U << 28); // Set ADVREGEN to 01
-    *((volatile uint32_t*) (ADC4 + ADC_CR)) &= ~(0b11 << 28); // Clear ADVREGEN bits
-    *((volatile uint32_t*) (ADC4 + ADC_CR)) |= (1U << 28); // Set ADVREGEN to 01
-    for(volatile uint16_t i = 0; i < 1000; i++);
+    // Configure GPIO Pins for Analog Mode
+    *((volatile uint32_t*) (GPIOA + GPIO_MODER)) |= (0b11 << (4 * 2)); // PA4
+    *((volatile uint32_t*) (GPIOA + GPIO_MODER)) |= (0b11 << (5 * 2)); // PA5
+    *((volatile uint32_t*) (GPIOA + GPIO_MODER)) |= (0b11 << (6 * 2)); // PA6
+    *((volatile uint32_t*) (GPIOB + GPIO_MODER)) |= (0b11 << (12 * 2)); // PB12
+    *((volatile uint32_t*) (GPIOB + GPIO_MODER)) |= (0b11 << (14 * 2)); // PB14
 
-    // ADC Calibration
-    *((volatile uint32_t*) (ADC2 + ADC_CR)) |= (1U << 31); // Start calibration (ADCAL)
-    while (*((volatile uint32_t*) (ADC2 + ADC_CR)) & (1U << 31)); // Wait for ADCAL to clear
-    *((volatile uint32_t*) (ADC4 + ADC_CR)) |= (1U << 31); // Start calibration (ADCAL)
-    while (*((volatile uint32_t*) (ADC4 + ADC_CR)) & (1U << 31)); // Wait for ADCAL to clear
+    // Set Synchronous Clock (AHB/1)
+    *((volatile uint32_t*) ADC12_COMMON_CCR) = (0b01 << 16); 
+    *((volatile uint32_t*) ADC34_COMMON_CCR) = (0b01 << 16);
 
-    // Configure Analog
-    *((volatile uint32_t*) (GPIOA + GPIO_MODER)) |= (0b11 << (4 * 2)); // PA4 Analog
-    *((volatile uint32_t*) (GPIOA + GPIO_MODER)) |= (0b11 << (5 * 2)); // PA4 Analog
-    *((volatile uint32_t*) (GPIOA + GPIO_MODER)) |= (0b11 << (6 * 2)); // PA6 Analog
-    *((volatile uint32_t*) (GPIOB + GPIO_MODER)) |= (0b11 << (12 * 2)); // PB12 Analog
-    *((volatile uint32_t*) (GPIOB + GPIO_MODER)) |= (0b11 << (14 * 2)); // PB14 Analog
+    // Exit Deep Power Down
+    *((volatile uint32_t*) (ADC2 + ADC_CR)) &= ~(1U << 29); 
+    *((volatile uint32_t*) (ADC4 + ADC_CR)) &= ~(1U << 29);
+    for(volatile uint32_t i=0; i<1000; i++) __asm__("nop");
 
-    // Set ADC Resolutions
-    *((volatile uint32_t*) (ADC2 + ADC_CFGR)) &= ~(0b111 << 3); // 12-bit resolution
-    *((volatile uint32_t*) (ADC4 + ADC_CFGR)) &= ~(0b111 << 3); // 12-bit resolution
-    
-    // ADC2 Injection Channel Length = 3 conversions
-    *((volatile uint32_t*) (ADC2 + ADC_JSQR)) &= ~(0b11 << 0);
-    *((volatile uint32_t*) (ADC2 + ADC_JSQR)) |= (0b10 << 0);
-     // ADC4 Inujection Channel Length = 2 conversions
-    *((volatile uint32_t*) (ADC4 + ADC_JSQR)) &= ~(0b11 << 0);
-    *((volatile uint32_t*) (ADC4 + ADC_JSQR)) |= (0b01 << 0);
+    // Enable Voltage Regulator
+    *((volatile uint32_t*) (ADC2 + ADC_CR)) |= (1U << 28);
+    *((volatile uint32_t*) (ADC4 + ADC_CR)) |= (1U << 28);
+    // Mandatory wait for Startup time (T_ADCVREG_STUP)
+    for(volatile uint32_t i = 0; i < 1000; i++) __asm__("nop");
 
-    // Enable End of Injected Conversion Sequence Interrupt
-    *((volatile uint32_t*) (ADC2 + ADC_IER)) |= (1U << 6);
+    // Calibration
+    *((volatile uint32_t*) (ADC2 + ADC_CR)) |= (1U << 31);
+    while (*((volatile uint32_t*) (ADC2 + ADC_CR)) & (1U << 31)); 
+    *((volatile uint32_t*) (ADC4 + ADC_CR)) |= (1U << 31);
+    while (*((volatile uint32_t*) (ADC4 + ADC_CR)) & (1U << 31));
 
-    // Update Event as TIM1 Trigger Output
-    *((volatile uint32_t*) (TIM1 + TIM_CR2)) |= (0b010 << 4);
+    // Enable ADCs and wait for ARDY
+    *((volatile uint32_t*) (ADC2 + ADC_CR)) |= (1U << 0); // ADEN = 1
+    while(!(*((volatile uint32_t*) (ADC2 + ADC_ISR)) & (1U << 0))); 
 
-    // Set JEXTSEL to trigger when PWM cycle starts
-    *((volatile uint32_t*) (ADC2 + ADC_JSQR)) |= (0b01 << 6); // Enable Trigger on Rising Edge
-    *((volatile uint32_t*) (ADC2 + ADC_JSQR)) |= (0b0000 << 2); // For clarity. TIM1_TRGO as Conversion Start Trigger
+    *((volatile uint32_t*) (ADC4 + ADC_CR)) |= (1U << 0); // ADEN = 1
+    while(!(*((volatile uint32_t*) (ADC4 + ADC_ISR)) & (1U << 0)));
 
-    *((volatile uint32_t*) (ADC4 + ADC_JSQR)) |= (0b01 << 6); // Enable Trigger on Rising Edge
-    *((volatile uint32_t*) (ADC4 + ADC_JSQR)) |= (0b0000 << 2); // For clarity. TIM1_TRGO as Conversion Start Trigger
+    *((volatile uint32_t*) (ADC4 + ADC_JSQR)) = (0b01 << 0) | (3U << 8) | (5U << 14);
 
-    // Set Injected Conversions Sequence
-    *((volatile uint32_t*) (ADC2 + ADC_JSQR)) |= (1U << 8); // ADC2 1st conversion = CH1 (PA4)
-    *((volatile uint32_t*) (ADC2 + ADC_JSQR)) |= (2U << 14); // ADC2 2nd conversion = CH2 (PA5)
-    *((volatile uint32_t*) (ADC2 + ADC_JSQR)) |= (3U << 20); // ADC2 3rd conversion = CH3 (PA6)
-    *((volatile uint32_t*) (ADC4 + ADC_JSQR)) |= (3U << 8); // ADC4 1st conversion = CH3 (PB12)
-    *((volatile uint32_t*) (ADC4 + ADC_JSQR)) |= (5U << 14); // ADC4 2nd conversion = CH5 (PB14)
+    *((volatile uint32_t*) (ADC4 + ADC_ISR)) = (1U << 6);
 
-    // Enable ADCs
-    *((volatile uint32_t*) (ADC2 + ADC_CR)) |= (1U << 0); // ADC2 Enable
-    *((volatile uint32_t*) (ADC4 + ADC_CR)) |= (1U << 0); // ADC4 Enable
-    while(!(*((volatile uint32_t*) (ADC2 + ADC_ISR)) & (1U << 0))); // Wait for ADRDY
-    while(!(*((volatile uint32_t*) (ADC4 + ADC_ISR)) & (1U << 0))); // Wait for ADRDY
+    // Initial Offset Readings
+    *((volatile uint32_t*) (ADC4 + ADC_CR)) |= (1U << 3); // JADSTART
+    while (!(*((volatile uint32_t*) (ADC4 + ADC_ISR)) & (1U << 6))); // Wait for JEOS
 
-    // *** Zero-Offset Configuring ***
-    *((volatile uint32_t*) (ADC4 + ADC_CR)) |= (1U << 3); // Start of Injected Conversion ADC4
+    I_offset.x = *((volatile uint32_t*) (ADC4 + ADC_JDR1));
+    I_offset.z = *((volatile uint32_t*) (ADC4 + ADC_JDR2));
 
-    while (!(*((volatile uint32_t*) (ADC4 + ADC_ISR)) & (1U << 6))); // Wait for ADC4 Conversion
-    
-    // Add Offsets
-    I_offset.x = ADCToCurrent(*((volatile uint32_t*) (ADC4 + ADC_JDR1)));
-    I_offset.z = ADCToCurrent(*((volatile uint32_t*) (ADC4 + ADC_JDR2)));
+    *((volatile uint32_t*) (ADC4 + ADC_ISR)) = (1U << 6); // Clear JEOS flag
+
+    // ADC2 Injected Sequence Configuration
+    // L=3 (0b10), Trigger=TIM1_TRGO (0b0000), Edge=Rising (0b01), Channels 1, 2, 3
+    *((volatile uint32_t*) (ADC2 + ADC_JSQR)) = (0b10 << 0)   | // Length = 3
+                                                (0b0000 << 2) | // JEXTSEL = TIM1_TRGO
+                                                (0b01 << 6)   | // JEXTEN = Rising Edge
+                                                (1U << 8)     | // JSQ1 = CH1
+                                                (2U << 14)    | // JSQ2 = CH2
+                                                (3U << 20);     // JSQ3 = CH3
+
+    // ADC4 Injected Sequence Configuration
+    // L=2 (0b01), Trigger=TIM1_TRGO (0b0000), Edge=Rising (0b01), Channels 3, 5
+    *((volatile uint32_t*) (ADC4 + ADC_JSQR)) = (0b01 << 0)   | // Length = 2
+                                                (0b0000 << 2) | // JEXTSEL = TIM1_TRGO
+                                                (0b01 << 6)   | // JEXTEN = Rising Edge
+                                                (3U << 8)     | // JSQ1 = CH3
+                                                (5U << 14);     // JSQ2 = CH5
+
+    // Trigger Confguration: Trigger on TIM1 Rising Edge Event (TRGO)
+    *((volatile uint32_t*) (ADC2 + ADC_JSQR)) |= (0b0000 << 2);
+    *((volatile uint32_t*) (ADC4 + ADC_JSQR)) |= (0b0000 << 2);
+    *((volatile uint32_t*) (ADC2 + ADC_JSQR)) |= (1U << 6);
+    *((volatile uint32_t*) (ADC4 + ADC_JSQR)) |= (1U << 6);
+
+    // Enable Interrupts for End of Injected Sequence of Conversions
+    *((volatile uint32_t*) (ADC2 + ADC_IER)) |= (1U << 6); // JEOSIE
+    *((volatile uint32_t*) (ADC4 + ADC_IER)) |= (1U << 6);
+
+    *((volatile uint32_t*) (ADC2 + ADC_CR)) |= (1U << 3); // JADSTART
+    *((volatile uint32_t*) (ADC4 + ADC_CR)) |= (1U << 3); // JADSTART
+
+    // Clear JEOS flags
+    *((volatile uint32_t*) (ADC2 + ADC_ISR)) = (1U << 6);
+    *((volatile uint32_t*) (ADC4 + ADC_ISR)) = (1U << 6);
 }
 
 void configureDShot() {
@@ -243,9 +298,13 @@ void configureDShot() {
 }
 
 void configureInterrupts() {
-    // Enable ADC End of Injected Sequence of Conversions Interrupts
-    *((volatile uint32_t*) (ADC2 + ADC_IER)) |= (1U << 6);
-    *((volatile uint32_t*) (ADC4 + ADC_IER)) |= (1U << 6);
+    // Clear any pending ADC interrupts
+    *((volatile uint32_t*) (ADC2 + ADC_ISR)) = (1U << 6); 
+    *((volatile uint32_t*) (ADC4 + ADC_ISR)) = (1U << 6);
+
+    // Clear pending EXTI interrupts
+    NVIC_ClearPendingIRQ(ADC1_2_IRQn);
+    NVIC_ClearPendingIRQ(ADC4_IRQn);
 
     // Set ADC interrupts to highest priority
     NVIC_SetPriority(ADC1_2_IRQn, 0);
