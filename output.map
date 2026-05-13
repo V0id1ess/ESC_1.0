@@ -9,7 +9,7 @@ c:/users/ryanf/.platformio/packages/toolchain-gccarmnoneeabi/bin/../lib/gcc/arm-
 c:/users/ryanf/.platformio/packages/toolchain-gccarmnoneeabi/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7e-m\libgcc.a(_arm_muldivsf3.o)
                               .pio\build\genericSTM32F303CB\src\interrupt_handlers.o (__aeabi_fmul)
 c:/users/ryanf/.platformio/packages/toolchain-gccarmnoneeabi/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7e-m\libgcc.a(_arm_cmpsf2.o)
-                              .pio\build\genericSTM32F303CB\lib9bc\libesc.a(control.o) (__aeabi_fcmpge)
+                              .pio\build\genericSTM32F303CB\lib9bc\libesc.a(control.o) (__aeabi_fcmplt)
 c:/users/ryanf/.platformio/packages/toolchain-gccarmnoneeabi/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7e-m\libgcc.a(_arm_fixsfsi.o)
                               .pio\build\genericSTM32F303CB\lib9bc\libesc.a(control.o) (__aeabi_f2iz)
 c:/users/ryanf/.platformio/packages/toolchain-gccarmnoneeabi/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7e-m\libgcc.a(_arm_fixunssfsi.o)
@@ -58,19 +58,14 @@ Discarded input sections
  .text          0x00000000        0x0 .pio\build\genericSTM32F303CB\src\main.o
  .data          0x00000000        0x0 .pio\build\genericSTM32F303CB\src\main.o
  .bss           0x00000000        0x0 .pio\build\genericSTM32F303CB\src\main.o
+ .group         0x00000000        0xc .pio\build\genericSTM32F303CB\lib9bc\libesc.a(control.o)
+ .group         0x00000000        0xc .pio\build\genericSTM32F303CB\lib9bc\libesc.a(control.o)
+ .group         0x00000000        0xc .pio\build\genericSTM32F303CB\lib9bc\libesc.a(control.o)
+ .group         0x00000000        0xc .pio\build\genericSTM32F303CB\lib9bc\libesc.a(control.o)
  .text          0x00000000        0x0 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(control.o)
  .data          0x00000000        0x0 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(control.o)
  .bss           0x00000000        0x0 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(control.o)
- .bss.Iq_setpoint
-                0x00000000        0x4 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(control.o)
- .bss.align_time
-                0x00000000        0x4 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(control.o)
  .bss.jerk      0x00000000        0x4 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(control.o)
- .bss.prevTime  0x00000000        0x4 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(control.o)
- .bss.profile   0x00000000        0x8 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(control.o)
- .bss.targetProfile
-                0x00000000        0x8 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(control.o)
- .bss.throttle  0x00000000        0x4 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(control.o)
  .text          0x00000000        0x0 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(initializations.o)
  .data          0x00000000        0x0 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(initializations.o)
  .bss           0x00000000        0x0 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(initializations.o)
@@ -183,7 +178,7 @@ LOAD c:/users/ryanf/.platformio/packages/toolchain-gccarmnoneeabi/bin/../lib/gcc
                 0x08000000                g_pfnVectors
                 0x08000188                . = ALIGN (0x4)
 
-.text           0x08000188     0x1038
+.text           0x08000188     0x16dc
                 0x08000188                . = ALIGN (0x4)
  *(.text)
  .text          0x08000188       0x40 c:/users/ryanf/.platformio/packages/toolchain-gccarmnoneeabi/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7e-m/crtbegin.o
@@ -315,127 +310,139 @@ LOAD c:/users/ryanf/.platformio/packages/toolchain-gccarmnoneeabi/bin/../lib/gcc
                 0x08000850       0x58 .pio\build\genericSTM32F303CB\src\interrupt_handlers.o
                 0x08000850                ADC1_2_IRQHandler
  .text.ADC4_IRQHandler
-                0x080008a8       0x90 .pio\build\genericSTM32F303CB\src\interrupt_handlers.o
+                0x080008a8       0x8c .pio\build\genericSTM32F303CB\src\interrupt_handlers.o
                 0x080008a8                ADC4_IRQHandler
  .text._Z7initESCv
-                0x08000938       0x26 .pio\build\genericSTM32F303CB\src\main.o
-                0x08000938                initESC()
+                0x08000934       0x26 .pio\build\genericSTM32F303CB\src\main.o
+                0x08000934                initESC()
  .text.startup.main
-                0x0800095e        0x8 .pio\build\genericSTM32F303CB\src\main.o
-                0x0800095e                main
- *fill*         0x08000966        0x2 
+                0x0800095a        0x8 .pio\build\genericSTM32F303CB\src\main.o
+                0x0800095a                main
+ *fill*         0x08000962        0x2 
+ .text._Z6atan2fff
+                0x08000964       0xd0 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(control.o)
+                0x08000964                atan2f(float, float)
+ .text._Z8getAnglev
+                0x08000a34       0x54 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(control.o)
+                0x08000a34                getAngle()
+ .text._Z10SMO_updatev
+                0x08000a88      0x1fc .pio\build\genericSTM32F303CB\lib9bc\libesc.a(control.o)
+                0x08000a88                SMO_update()
+ .text._ZN13PIDController7computeEff
+                0x08000c84       0x90 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(control.o)
+                0x08000c84                PIDController::compute(float, float)
  .text._Z10FOC_updatev
-                0x08000968      0x198 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(control.o)
-                0x08000968                FOC_update()
+                0x08000d14      0x484 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(control.o)
+                0x08000d14                FOC_update()
  .text.startup._GLOBAL__sub_I_motorState
-                0x08000b00       0x5c .pio\build\genericSTM32F303CB\lib9bc\libesc.a(control.o)
+                0x08001198       0x68 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(control.o)
  .text._Z17enableSystemClockv
-                0x08000b5c       0x70 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(initializations.o)
-                0x08000b5c                enableSystemClock()
+                0x08001200       0x70 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(initializations.o)
+                0x08001200                enableSystemClock()
  .text._Z15configureClocksv
-                0x08000bcc       0x70 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(initializations.o)
-                0x08000bcc                configureClocks()
+                0x08001270       0x70 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(initializations.o)
+                0x08001270                configureClocks()
  .text._Z9enableFPUv
-                0x08000c3c       0x24 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(initializations.o)
-                0x08000c3c                enableFPU()
+                0x080012e0       0x24 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(initializations.o)
+                0x080012e0                enableFPU()
  .text._Z18LEDStartupSequencev
-                0x08000c60       0xa4 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(initializations.o)
-                0x08000c60                LEDStartupSequence()
+                0x08001304       0xa4 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(initializations.o)
+                0x08001304                LEDStartupSequence()
  .text._Z13configureLEDsv
-                0x08000d04       0x48 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(initializations.o)
-                0x08000d04                configureLEDs()
+                0x080013a8       0x48 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(initializations.o)
+                0x080013a8                configureLEDs()
  .text._Z9enablePWMv
-                0x08000d4c       0xf0 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(initializations.o)
-                0x08000d4c                enablePWM()
+                0x080013f0       0xf0 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(initializations.o)
+                0x080013f0                enablePWM()
  .text._Z12configurePWMv
-                0x08000e3c      0x148 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(initializations.o)
-                0x08000e3c                configurePWM()
+                0x080014e0      0x148 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(initializations.o)
+                0x080014e0                configurePWM()
  .text._Z12configureADCv
-                0x08000f84      0x194 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(initializations.o)
-                0x08000f84                configureADC()
+                0x08001628      0x194 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(initializations.o)
+                0x08001628                configureADC()
  .text._Z19configureInterruptsv
-                0x08001118       0x48 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(initializations.o)
-                0x08001118                configureInterrupts()
+                0x080017bc       0x48 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(initializations.o)
+                0x080017bc                configureInterrupts()
  .text.__libc_init_array
-                0x08001160       0x48 c:/users/ryanf/.platformio/packages/toolchain-gccarmnoneeabi/bin/../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m\libc_nano.a(lib_a-init.o)
-                0x08001160                __libc_init_array
+                0x08001804       0x48 c:/users/ryanf/.platformio/packages/toolchain-gccarmnoneeabi/bin/../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m\libc_nano.a(lib_a-init.o)
+                0x08001804                __libc_init_array
  *(.glue_7)
- .glue_7        0x080011a8        0x0 linker stubs
+ .glue_7        0x0800184c        0x0 linker stubs
  *(.glue_7t)
- .glue_7t       0x080011a8        0x0 linker stubs
+ .glue_7t       0x0800184c        0x0 linker stubs
  *(.eh_frame)
- .eh_frame      0x080011a8        0x0 c:/users/ryanf/.platformio/packages/toolchain-gccarmnoneeabi/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7e-m/crtbegin.o
+ .eh_frame      0x0800184c        0x0 c:/users/ryanf/.platformio/packages/toolchain-gccarmnoneeabi/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7e-m/crtbegin.o
  *(.init)
- .init          0x080011a8        0x4 c:/users/ryanf/.platformio/packages/toolchain-gccarmnoneeabi/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7e-m/crti.o
-                0x080011a8                _init
- .init          0x080011ac        0x8 c:/users/ryanf/.platformio/packages/toolchain-gccarmnoneeabi/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7e-m/crtn.o
+ .init          0x0800184c        0x4 c:/users/ryanf/.platformio/packages/toolchain-gccarmnoneeabi/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7e-m/crti.o
+                0x0800184c                _init
+ .init          0x08001850        0x8 c:/users/ryanf/.platformio/packages/toolchain-gccarmnoneeabi/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7e-m/crtn.o
  *(.fini)
- .fini          0x080011b4        0x4 c:/users/ryanf/.platformio/packages/toolchain-gccarmnoneeabi/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7e-m/crti.o
-                0x080011b4                _fini
- .fini          0x080011b8        0x8 c:/users/ryanf/.platformio/packages/toolchain-gccarmnoneeabi/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7e-m/crtn.o
-                0x080011c0                . = ALIGN (0x4)
-                0x080011c0                _etext = .
+ .fini          0x08001858        0x4 c:/users/ryanf/.platformio/packages/toolchain-gccarmnoneeabi/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7e-m/crti.o
+                0x08001858                _fini
+ .fini          0x0800185c        0x8 c:/users/ryanf/.platformio/packages/toolchain-gccarmnoneeabi/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7e-m/crtn.o
+                0x08001864                . = ALIGN (0x4)
+                0x08001864                _etext = .
 
-.vfp11_veneer   0x080011c0        0x0
- .vfp11_veneer  0x080011c0        0x0 linker stubs
+.vfp11_veneer   0x08001864        0x0
+ .vfp11_veneer  0x08001864        0x0 linker stubs
 
-.v4_bx          0x080011c0        0x0
- .v4_bx         0x080011c0        0x0 linker stubs
+.v4_bx          0x08001864        0x0
+ .v4_bx         0x08001864        0x0 linker stubs
 
-.iplt           0x080011c0        0x0
- .iplt          0x080011c0        0x0 c:/users/ryanf/.platformio/packages/toolchain-gccarmnoneeabi/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7e-m/crtbegin.o
+.iplt           0x08001864        0x0
+ .iplt          0x08001864        0x0 c:/users/ryanf/.platformio/packages/toolchain-gccarmnoneeabi/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7e-m/crtbegin.o
 
-.rodata         0x080011c0     0x1000
-                0x080011c0                . = ALIGN (0x4)
+.rodata         0x08001864     0x1000
+                0x08001864                . = ALIGN (0x4)
  *(.rodata)
  *(.rodata*)
  .rodata._ZL8sinTable
-                0x080011c0     0x1000 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(control.o)
-                0x080021c0                . = ALIGN (0x4)
+                0x08001864     0x1000 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(control.o)
+                0x08002864                . = ALIGN (0x4)
 
-.rel.dyn        0x080021c0        0x0
- .rel.iplt      0x080021c0        0x0 c:/users/ryanf/.platformio/packages/toolchain-gccarmnoneeabi/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7e-m/crtbegin.o
+.rel.dyn        0x08002864        0x0
+ .rel.iplt      0x08002864        0x0 c:/users/ryanf/.platformio/packages/toolchain-gccarmnoneeabi/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7e-m/crtbegin.o
 
-.ARM.extab      0x080021c0        0x0
-                0x080021c0                . = ALIGN (0x4)
+.ARM.extab      0x08002864        0x0
+                0x08002864                . = ALIGN (0x4)
  *(.ARM.extab* .gnu.linkonce.armextab.*)
-                0x080021c0                . = ALIGN (0x4)
+                0x08002864                . = ALIGN (0x4)
 
-.ARM            0x080021c0        0x0
-                0x080021c0                . = ALIGN (0x4)
-                0x080021c0                __exidx_start = .
+.ARM            0x08002864        0x0
+                0x08002864                . = ALIGN (0x4)
+                0x08002864                __exidx_start = .
  *(.ARM.exidx*)
-                0x080021c0                __exidx_end = .
-                0x080021c0                . = ALIGN (0x4)
+                0x08002864                __exidx_end = .
+                0x08002864                . = ALIGN (0x4)
 
-.preinit_array  0x080021c0        0x0
-                0x080021c0                . = ALIGN (0x4)
-                0x080021c0                PROVIDE (__preinit_array_start, .)
+.preinit_array  0x08002864        0x0
+                0x08002864                . = ALIGN (0x4)
+                0x08002864                PROVIDE (__preinit_array_start, .)
  *(.preinit_array*)
-                0x080021c0                PROVIDE (__preinit_array_end, .)
-                0x080021c0                . = ALIGN (0x4)
+                0x08002864                PROVIDE (__preinit_array_end, .)
+                0x08002864                . = ALIGN (0x4)
 
-.init_array     0x080021c0        0x8
-                0x080021c0                . = ALIGN (0x4)
-                0x080021c0                PROVIDE (__init_array_start, .)
+.init_array     0x08002864        0x8
+                0x08002864                . = ALIGN (0x4)
+                0x08002864                PROVIDE (__init_array_start, .)
  *(SORT_BY_NAME(.init_array.*))
  *(.init_array*)
- .init_array    0x080021c0        0x4 c:/users/ryanf/.platformio/packages/toolchain-gccarmnoneeabi/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7e-m/crtbegin.o
- .init_array    0x080021c4        0x4 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(control.o)
-                0x080021c8                PROVIDE (__init_array_end, .)
-                0x080021c8                . = ALIGN (0x4)
+ .init_array    0x08002864        0x4 c:/users/ryanf/.platformio/packages/toolchain-gccarmnoneeabi/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7e-m/crtbegin.o
+ .init_array    0x08002868        0x4 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(control.o)
+                0x0800286c                PROVIDE (__init_array_end, .)
+                0x0800286c                . = ALIGN (0x4)
 
-.fini_array     0x080021c8        0x4
-                0x080021c8                . = ALIGN (0x4)
+.fini_array     0x0800286c        0x4
+                0x0800286c                . = ALIGN (0x4)
                 [!provide]                PROVIDE (__fini_array_start, .)
  *(SORT_BY_NAME(.fini_array.*))
  *(.fini_array*)
- .fini_array    0x080021c8        0x4 c:/users/ryanf/.platformio/packages/toolchain-gccarmnoneeabi/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7e-m/crtbegin.o
+ .fini_array    0x0800286c        0x4 c:/users/ryanf/.platformio/packages/toolchain-gccarmnoneeabi/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7e-m/crtbegin.o
                 [!provide]                PROVIDE (__fini_array_end, .)
-                0x080021cc                . = ALIGN (0x4)
-                0x080021cc                _sidata = LOADADDR (.data)
+                0x08002870                . = ALIGN (0x4)
+                0x08002870                _sidata = LOADADDR (.data)
 
-.data           0x20000000        0x0 load address 0x080021cc
+.data           0x20000000        0x0 load address 0x08002870
                 0x20000000                . = ALIGN (0x4)
                 0x20000000                _sdata = .
  *(.data)
@@ -444,12 +451,12 @@ LOAD c:/users/ryanf/.platformio/packages/toolchain-gccarmnoneeabi/bin/../lib/gcc
  *(.RamFunc*)
                 0x20000000                . = ALIGN (0x4)
                 0x20000000                _edata = .
-                0x080021cc                _siccmram = LOADADDR (.ccmram)
+                0x08002870                _siccmram = LOADADDR (.ccmram)
 
-.igot.plt       0x20000000        0x0 load address 0x080021cc
+.igot.plt       0x20000000        0x0 load address 0x08002870
  .igot.plt      0x20000000        0x0 c:/users/ryanf/.platformio/packages/toolchain-gccarmnoneeabi/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7e-m/crtbegin.o
 
-.ccmram         0x10000000        0x0 load address 0x080021cc
+.ccmram         0x10000000        0x0 load address 0x08002870
                 0x10000000                . = ALIGN (0x4)
                 0x10000000                _sccmram = .
  *(.ccmram)
@@ -458,7 +465,7 @@ LOAD c:/users/ryanf/.platformio/packages/toolchain-gccarmnoneeabi/bin/../lib/gcc
                 0x10000000                _eccmram = .
                 0x10000000                . = ALIGN (0x4)
 
-.bss            0x20000000       0xf4
+.bss            0x20000000      0x120
                 0x20000000                _sbss = .
                 0x20000000                __bss_start__ = _sbss
  *(.bss)
@@ -470,64 +477,82 @@ LOAD c:/users/ryanf/.platformio/packages/toolchain-gccarmnoneeabi/bin/../lib/gcc
                 0x20000020                I
  .bss.I_offset  0x2000002c        0xc .pio\build\genericSTM32F303CB\lib9bc\libesc.a(control.o)
                 0x2000002c                I_offset
- .bss.IdController
-                0x20000038       0x18 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(control.o)
-                0x20000038                IdController
- .bss.IqController
-                0x20000050       0x18 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(control.o)
-                0x20000050                IqController
- .bss.Irot      0x20000068        0x8 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(control.o)
-                0x20000068                Irot
- .bss.Istat     0x20000070        0x8 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(control.o)
-                0x20000070                Istat
- .bss.MotionProfiler
-                0x20000078       0x1c .pio\build\genericSTM32F303CB\lib9bc\libesc.a(control.o)
-                0x20000078                MotionProfiler
- .bss.V         0x20000094        0xc .pio\build\genericSTM32F303CB\lib9bc\libesc.a(control.o)
-                0x20000094                V
- .bss.VelocityFBController
-                0x200000a0       0x18 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(control.o)
-                0x200000a0                VelocityFBController
- .bss.VelocityFFController
-                0x200000b8        0x8 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(control.o)
-                0x200000b8                VelocityFFController
- .bss.Vrot      0x200000c0        0x8 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(control.o)
-                0x200000c0                Vrot
- .bss.Vstat     0x200000c8        0x8 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(control.o)
-                0x200000c8                Vstat
+ .bss.Irot      0x20000038        0x8 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(control.o)
+                0x20000038                Irot
+ .bss.Istat     0x20000040        0x8 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(control.o)
+                0x20000040                Istat
+ .bss.V         0x20000048        0xc .pio\build\genericSTM32F303CB\lib9bc\libesc.a(control.o)
+                0x20000048                V
+ .bss.Vrot      0x20000054        0x8 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(control.o)
+                0x20000054                Vrot
+ .bss.Vstat     0x2000005c        0x8 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(control.o)
+                0x2000005c                Vstat
+ .bss._ZL10elec_angle
+                0x20000064        0x4 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(control.o)
+ .bss._ZL11Iq_setpoint
+                0x20000068        0x4 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(control.o)
+ .bss._ZL12IdController
+                0x2000006c       0x14 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(control.o)
+ .bss._ZL12IqController
+                0x20000080       0x14 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(control.o)
+ .bss._ZL13prev_velocity
+                0x20000094        0x4 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(control.o)
  .bss._ZL13virtual_angle
-                0x200000d0        0x4 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(control.o)
- .bss._ZL7_cosVal
+                0x20000098        0x4 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(control.o)
+ .bss._ZL14MotionProfiler
+                0x2000009c       0x18 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(control.o)
+ .bss._ZL15prev_elec_angle
+                0x200000b4        0x4 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(control.o)
+ .bss._ZL20VelocityFBController
+                0x200000b8       0x14 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(control.o)
+ .bss._ZL20VelocityFFController
+                0x200000cc        0x8 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(control.o)
+ .bss._ZL5angle
                 0x200000d4        0x4 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(control.o)
- .bss._ZL7_sinVal
-                0x200000d8        0x4 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(control.o)
- .bss.angle     0x200000dc        0x4 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(control.o)
-                0x200000dc                angle
- .bss.frameCount
+ .bss._ZL6I_pred
+                0x200000d8        0x8 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(control.o)
+ .bss._ZL6f_elec
                 0x200000e0        0x4 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(control.o)
-                0x200000e0                frameCount
+ .bss._ZL7_cosVal
+                0x200000e4        0x4 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(control.o)
+ .bss._ZL7_sinVal
+                0x200000e8        0x4 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(control.o)
+ .bss._ZL8back_emf
+                0x200000ec        0x8 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(control.o)
+ .bss.align_time
+                0x200000f4        0x4 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(control.o)
+                0x200000f4                align_time
+ .bss.frameCount
+                0x200000f8        0x4 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(control.o)
+                0x200000f8                frameCount
  .bss.motorState
-                0x200000e4        0x1 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(control.o)
-                0x200000e4                motorState
- *fill*         0x200000e5        0x3 
- .bss.signals   0x200000e8        0xc .pio\build\genericSTM32F303CB\lib9bc\libesc.a(control.o)
-                0x200000e8                signals
+                0x200000fc        0x1 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(control.o)
+                0x200000fc                motorState
+ *fill*         0x200000fd        0x3 
+ .bss.profile   0x20000100        0x8 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(control.o)
+                0x20000100                profile
+ .bss.signals   0x20000108        0xc .pio\build\genericSTM32F303CB\lib9bc\libesc.a(control.o)
+                0x20000108                signals
+ .bss.targetProfile
+                0x20000114        0x8 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(control.o)
+                0x20000114                targetProfile
+ .bss.throttle  0x2000011c        0x4 .pio\build\genericSTM32F303CB\lib9bc\libesc.a(control.o)
+                0x2000011c                throttle
  *(COMMON)
-                0x200000f4                . = ALIGN (0x4)
-                0x200000f4                _ebss = .
-                0x200000f4                __bss_end__ = _ebss
+                0x20000120                . = ALIGN (0x4)
+                0x20000120                _ebss = .
+                0x20000120                __bss_end__ = _ebss
 
 ._user_heap_stack
-                0x200000f4      0x604
-                0x200000f8                . = ALIGN (0x8)
- *fill*         0x200000f4        0x4 
+                0x20000120      0x600
+                0x20000120                . = ALIGN (0x8)
                 [!provide]                PROVIDE (end, .)
                 [!provide]                PROVIDE (_end, .)
-                0x200002f8                . = (. + _Min_Heap_Size)
- *fill*         0x200000f8      0x200 
-                0x200006f8                . = (. + _Min_Stack_Size)
- *fill*         0x200002f8      0x400 
-                0x200006f8                . = ALIGN (0x8)
+                0x20000320                . = (. + _Min_Heap_Size)
+ *fill*         0x20000120      0x200 
+                0x20000720                . = (. + _Min_Stack_Size)
+ *fill*         0x20000320      0x400 
+                0x20000720                . = ALIGN (0x8)
 
 /DISCARD/
  libc.a(*)

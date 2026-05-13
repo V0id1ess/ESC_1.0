@@ -235,24 +235,14 @@ inline float inverse(float x) {
 }
 
 inline float atan2f(float y, float x) {
-    float abs_x = fabsf(x);
-    float abs_y = fabsf(y);
-    bool swap = (abs_y > abs_x);
-    
-    float den = swap ? abs_y : abs_x;
-    float num = swap ? abs_x : abs_y;
-    
-    float inv_den = inverse(den);
-    float a = num * inv_den;
-    
+    float abs_x = (x < 0) ? -x : x;
+    float abs_y = (y < 0) ? -y : y;
+    float a = (abs_x < abs_y) ? abs_x / abs_y : abs_y / abs_x;
     float s = a * a;
-    
-    float r = ((-0.04649647f * s + 0.15931422f) * s - 0.32762276f) * s * a + a;
-
-    if (swap) r = 1.57079637f - r; // pi/2
-    if (x < 0) r = 3.14159265f - r; // pi
+    float r = ((-0.0464964749f * s + 0.15931422f) * s - 0.327622764f) * s * a + a;
+    if (abs_y > abs_x) r = 1.57079637f - r;
+    if (x < 0) r = 3.14159265f - r;
     if (y < 0) r = -r;
-    
     return r;
 }
 

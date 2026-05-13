@@ -18,7 +18,6 @@ extern "C" {
     }
     
     void ADC4_IRQHandler(void) {
-        count += 0.001f;
 
         // Phase Current Feedback
         if (*((volatile uint32_t*) (ADC4 + ADC_ISR)) & (1U << 6)) { // JEOS Flag
@@ -31,6 +30,7 @@ extern "C" {
             I.y = -(I.x + I.z);
 
             FOC_update();
+            count += 0.001f;
         }
     }
 }

@@ -12,7 +12,7 @@
 #define APB1CLK 32000000UL // 32MHz
 
 // Interface
-#define PWM 25000UL // 25kHz
+#define PWM 30000UL // 25kHz
 #define PWM_ARR (static_cast<uint32_t>(SYSCLK) / static_cast<uint32_t>(PWM) - 1UL)
 #define VREF 3.3f // 3.3V
 #define DT 1.0f/PWM // Time step for control loop (seconds)

@@ -7,37 +7,42 @@
 #include <profiler.h>
 
 class PIDController {
-    public:
-        PIDController(float kpGain, float kiGain, float kdGain)
-            :kp(kpGain), ki(kiGain), kd(kdGain), integral(0.0), derivative(0.0) {}
+public:
+    // Store pre-multiplied gains
+    PIDController(float kpGain, float kiGain, float kdGain, float dt) {
+        kp = kpGain;
+        ki_dt = kiGain * dt;
+        kd_inv_dt = kdGain / dt;
+        integral = 0.0f;
+        prev_error = 0.0f;
+    }
 
-        float compute(float setpoint, float measured_value, float dt) {
-            float error = setpoint - measured_value;
+    // Mark as inline to ensure it flattens into FOC_update
+    inline float compute(float setpoint, float measured){
+        float error = setpoint - measured;
+        
+        // Proportional
+        float proportional = kp * error;
+        
+        // Integral with clamping
+        integral += ki_dt * error;
+        if (integral > MAX_VOLTAGE) integral = MAX_VOLTAGE;
+        else if (integral < -MAX_VOLTAGE) integral = -MAX_VOLTAGE;
 
-            integral += error * dt;
-            derivative = (error - previous_error) * PWM;
-            previous_error = error;
+        // Derivative
+        float derivative = kd_inv_dt * (error - prev_error);
+        prev_error = error;
 
-            float output = kp * error + ki * integral + kd * derivative;
+        float output = proportional + integral + derivative;
 
-            if (output > MAX_VOLTAGE) {
-                output = MAX_VOLTAGE;
-                integral -= error * dt;
-            } else if (output < -MAX_VOLTAGE) {
-                output = -MAX_VOLTAGE;
-                integral -= error * dt;
-            }
+        if (output > MAX_VOLTAGE) return MAX_VOLTAGE;
+        if (output < -MAX_VOLTAGE) return -MAX_VOLTAGE;
+        return output;
+    }
 
-            return output;
-        }
-    
-    private:
-        float kp;
-        float ki;
-        float kd;
-        float previous_error;
-        float integral;
-        float derivative;
+private:
+    float kp, ki_dt, kd_inv_dt;
+    float integral, prev_error;
 };
 
 #endif

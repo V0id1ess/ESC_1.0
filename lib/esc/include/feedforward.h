@@ -17,7 +17,7 @@ class Feedforward {
          *  @param profile The current profile
          *  @return The feedforward control signal (Amps)
          */
-        float compute(Profile profile) {
+        inline float compute(Profile &profile) const {
             return (kV * profile.velocity) + (kA * profile.acceleration);
         }
     private:

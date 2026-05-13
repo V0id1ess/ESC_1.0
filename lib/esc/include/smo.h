@@ -21,9 +21,6 @@ static Vector2D back_emf; // Back-EMF voltages for stationary frame (alpha-beta)
 
 inline void incrementVirtualAngle(float speed) {
     virtual_angle += speed * DT; // Increment virtual angle based on estimated speed
-    if (virtual_angle >= 360.0f) {
-        virtual_angle -= 360.0f; // Wrap around at 360 degrees
-    }
 }
 
 inline float square(float x) {
@@ -55,10 +52,8 @@ inline void SMO_update() {
     back_emf.x += GAIN * signum(I.y - I_pred.y) * DT;
     back_emf.y += GAIN * signum(I.x - I_pred.x) * DT;
 
-    elec_angle = atan2f(back_emf.y, back_emf.x) + 1.57079632679f; // Offset by 90 degrees to align with rotor position
-
     // Apply First-Order IIR filter to smooth angle estimation accounting for phase lag
-    elec_angle = prev_elec_angle + LOW_PASS_ALPHA * (elec_angle - prev_elec_angle) + atan2f(f_elec, f_elec_MAX);
+    elec_angle = prev_elec_angle + LOW_PASS_ALPHA * (atan2f(back_emf.y, back_emf.x) + 1.57079632679f - prev_elec_angle) + atan2f(f_elec, f_elec_MAX);
 
     mech_angle = ELEC_TO_MECH(elec_angle); // Convert electrical angle to mechanical angle
     prev_mech_angle = ELEC_TO_MECH(prev_elec_angle); // Store previous mechanical angle for velocity estimation
